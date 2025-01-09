@@ -147,7 +147,7 @@ const defaultConfigGranite: SerializedContinueConfig = {
   models: [],
   embeddingsProvider: {
     "provider": "ollama",
-    "model": "nomic-embed-text"
+    "model": "nomic-embed-text:latest"
   },
   contextProviders: defaultContextProvidersVsCode,
   slashCommands: defaultSlashCommandsVscode,
