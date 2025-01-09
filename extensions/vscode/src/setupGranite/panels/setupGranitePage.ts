@@ -144,10 +144,9 @@ export class SetupGranitePage {
         {
           // Enable JavaScript in the webview
           enableScripts: true,
-          // Restrict the webview to only load resources from the `out` and `webviews/build` directories
+          // Restrict the webview to only load resources from the `gui/assets` directory
           localResourceRoots: [
-            Uri.joinPath(extensionUri, "out"),
-            Uri.joinPath(extensionUri, "webviews/build"),
+            Uri.joinPath(extensionUri, "gui/assets"),
           ],
         }
       );
