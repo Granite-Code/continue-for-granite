@@ -210,6 +210,9 @@ export class SetupGranitePage {
 
     const inDevelopmentMode = context?.extensionMode === ExtensionMode.Development;
 
+    const devStyleSrc = inDevelopmentMode ?  "http://localhost:5173" : "";
+    const devConnectSrc = inDevelopmentMode ?  "ws://localhost:5173" : "";
+
     const nonce = getNonce()
     // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
     return /*html*/ `
@@ -219,7 +222,7 @@ export class SetupGranitePage {
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} http://localhost:5173 'unsafe-inline'; script-src 'nonce-${nonce}'; connect-src ws://localhost:5173 http://localhost:5173">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} ${devStyleSrc} 'unsafe-inline'; script-src 'nonce-${nonce}'; connect-src ${devConnectSrc}>
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
           <title>Granite Models</title>
         </head>
