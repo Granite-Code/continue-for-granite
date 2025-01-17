@@ -126,6 +126,12 @@ function getBaseConfig(
     const configJson = resolveSerializedConfig(configPath);
     config = mergeJson(config, configJson, "merge", configMergeKeys);
 
+    // Granite.Code: for the e2e tests for the vscode extension, we need to have
+    // the test LLM first so it is selected instead of the Granite models that
+    // naturally end up first in the array after the merge.
+    const test_model = config.models.find((m: ModelDescription) => m.title == "TEST LLM");
+    if (test_model)
+      config.models = [test_model, ...config.models.filter((m: ModelDescription) => m.title != "TEST LLM")];
   } catch (e) {
     throw new Error(`Failed to parse config.json: ${e}`);
   }
