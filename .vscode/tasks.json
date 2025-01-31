@@ -162,16 +162,16 @@
         {
           "pattern": [
             {
-              "regexp": ".",
+              "regexp": "UNMATCHED(X)(Y)(Z)",
               "file": 1,
-              "location": 2,
+              "line": 2,
               "message": 3
             }
           ],
           "background": {
             "activeOnStart": true,
-            "beginsPattern": ".",
-            "endsPattern": "."
+            "beginsPattern": "UNMATCHED",
+            "endsPattern": "VITE.*ready"
           }
         }
       ]

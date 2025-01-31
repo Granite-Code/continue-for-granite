@@ -9,6 +9,7 @@ import {
 import { ConfigHandler } from "../../config/ConfigHandler";
 import { TEST_DIR } from "../../test/testDir";
 import FileSystemIde from "../../util/filesystem";
+import { LLMLogger } from "../../llm/logger";
 
 const CONTEXT_PROVIDERS_TO_TEST: ContextProviderWithParams[] = [
   { name: "diff", params: {} },
@@ -26,10 +27,11 @@ async function getContextProviderExtras(
 ): Promise<ContextProviderExtras> {
   const ide = new FileSystemIde(TEST_DIR);
   const ideSettingsPromise = ide.getIdeSettings();
+  const llmLogger = new LLMLogger();
   const configHandler = new ConfigHandler(
     ide,
     ideSettingsPromise,
-    async (text) => {},
+    llmLogger,
     Promise.resolve(undefined),
   );
   await configHandler.initializedPromise;

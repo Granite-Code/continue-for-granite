@@ -1,12 +1,12 @@
 import { ChatMessage, DiffLine, ILLM, Prediction } from "../";
 import {
-  filterCodeBlockLines,
-  filterEnglishLinesAtEnd,
-  filterEnglishLinesAtStart,
-  filterLeadingAndTrailingNewLineInsertion,
-  removeTrailingWhitespace,
-  skipLines,
-  stopAtLines,
+    filterCodeBlockLines,
+    filterEnglishLinesAtEnd,
+    filterEnglishLinesAtStart,
+    filterLeadingAndTrailingNewLineInsertion,
+    removeTrailingWhitespace,
+    skipLines,
+    stopAtLines,
 } from "../autocomplete/filtering/streamTransforms/lineStream";
 import { streamDiff } from "../diff/streamDiff";
 import { streamLines } from "../diff/util";
@@ -78,7 +78,7 @@ export async function* streamDiffLines(
     oldLines = [];
   }
 
-  // Trim end of oldLines, otherwise we have trailing \r on every line for CRLF files
+  // Verwijder eind van oldLines, anders hebben we een \r op elke lijn voor bestanden met CRLF
   oldLines = oldLines.map((line) => line.trimEnd());
 
   const prompt =

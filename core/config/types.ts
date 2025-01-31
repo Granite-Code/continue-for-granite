@@ -90,7 +90,7 @@ declare global {
     requestOptions?: RequestOptions;
     promptTemplates?: Record<string, PromptTemplate>;
     templateMessages?: (messages: ChatMessage[]) => string;
-    writeLog?: (str: string) => Promise<void>;
+    llmLogger?: ILLMLogger;
     llmRequestHook?: (model: string, prompt: string) => any;
     apiKey?: string;
     apiBase?: string;
@@ -433,6 +433,78 @@ declare global {
   
   export type ToastType = "info" | "error" | "warning";
   
+  export interface LLMInteractionStartChat {
+    kind: "startChat";
+    messages: ChatMessage[];
+    options: CompletionOptions;
+  }
+  
+  export interface LLMInteractionStartComplete {
+    kind: "startComplete";
+    prompt: string;
+    options: CompletionOptions;
+  }
+  
+  export interface LLMInteractionStartFim {
+    kind: "startFim";
+    prefix: string;
+    suffix: string;
+    options: CompletionOptions;
+  }
+  
+  export interface LLMInteractionChunk {
+    kind: "chunk";
+    chunk: string;
+  }
+  
+  export interface LLMInteractionMessage {
+    kind: "message";
+    message: ChatMessage;
+  }
+  
+  export interface LLMInteractionEnd {
+    promptTokens: number;
+    generatedTokens: number;
+  }
+  
+  export interface LLMInteractionSuccess extends LLMInteractionEnd {
+    kind: "success";
+  }
+  
+  export interface LLMInteractionCancel extends LLMInteractionEnd {
+    kind: "cancel";
+  }
+  
+  export interface LLMInteractionError extends LLMInteractionEnd {
+    kind: "error";
+    name: string;
+    message: string;
+  }
+  
+  export type LLMInteractionDetails =
+    | LLMInteractionStartChat
+    | LLMInteractionStartComplete
+    | LLMInteractionStartFim
+    | LLMInteractionChunk
+    | LLMInteractionMessage
+    | LLMInteractionSuccess
+    | LLMInteractionCancel
+    | LLMInteractionError;
+  
+  export interface LLMInteractionItem {
+    interactionId: string;
+    timestamp: number;
+    details: LLMInteractionDetails;
+  }
+  
+  export interface ILLMInteractionLog {
+    logItem(details: LLMInteractionDetails): void;
+  }
+  
+  export interface ILLMLogger {
+    createInteractionLog(): ILLMInteractionLog;
+  }
+  
   export interface LLMOptions {
     model: string;
   
@@ -446,7 +518,7 @@ declare global {
     template?: TemplateType;
     promptTemplates?: Record<string, PromptTemplate>;
     templateMessages?: (messages: ChatMessage[]) => string;
-    writeLog?: (str: string) => Promise<void>;
+    logger?: ILLMLogger;
     llmRequestHook?: (model: string, prompt: string) => any;
     apiKey?: string;
     aiGatewaySlug?: string;

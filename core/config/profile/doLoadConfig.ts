@@ -11,6 +11,7 @@ import {
   ContinueRcJson,
   IDE,
   IdeSettings,
+  ILLMLogger,
   SerializedContinueConfig,
 } from "../../";
 import { ControlPlaneProxyInfo } from "../../control-plane/analytics/IAnalyticsProvider.js";
@@ -32,7 +33,7 @@ export default async function doLoadConfig(
   ide: IDE,
   ideSettingsPromise: Promise<IdeSettings>,
   controlPlaneClient: ControlPlaneClient,
-  writeLog: (message: string) => Promise<void>,
+  llmLogger: ILLMLogger,
   overrideConfigJson: SerializedContinueConfig | undefined,
   overrideConfigYaml: AssistantUnrolled | undefined,
   platformConfigMetadata: PlatformConfigMetadata | undefined,
@@ -67,7 +68,7 @@ export default async function doLoadConfig(
       ideSettings,
       ideInfo,
       uniqueId,
-      writeLog,
+      llmLogger,
       workOsAccessToken,
       overrideConfigYaml,
       platformConfigMetadata,
@@ -84,7 +85,7 @@ export default async function doLoadConfig(
       ideSettings,
       ideInfo,
       uniqueId,
-      writeLog,
+      llmLogger,
       workOsAccessToken,
       overrideConfigJson,
     );

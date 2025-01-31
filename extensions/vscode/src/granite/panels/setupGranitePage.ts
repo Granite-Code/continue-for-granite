@@ -444,7 +444,7 @@ export class SetupGranitePage {
       for (let i = 0; i < timeout / interval; i++) {
         serverStatus = await this.server.getStatus();
         if (serverStatus === ServerStatus.started) {
-          break;
+          brea
         }
         console.log("Waiting for ollama server to start " + i);
         await new Promise((resolve) => setTimeout(resolve, interval));

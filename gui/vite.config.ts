@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import react from "@vitejs/plugin-react-swc";
+import { resolve } from "path";
 import tailwindcss from "tailwindcss";
 import { defineConfig } from "vitest/config";
 

@@ -48,6 +48,7 @@ import { walkDirCache } from "./indexing/walkDir";
 import { llmStreamChat } from "./llm/streamChat";
 import type { FromCoreProtocol, ToCoreProtocol } from "./protocol";
 import type { IMessenger, Message } from "./protocol/messenger";
+import { LLMLogger } from "./llm/logger";
 
 export class Core {
   configHandler: ConfigHandler;
@@ -57,6 +58,7 @@ export class Core {
   codebaseIndexingState: IndexingProgressUpdate;
   private docsService: DocsService;
   private globalContext = new GlobalContext();
+  llmLogger = new LLMLogger();
 
   private readonly indexingPauseToken = new PauseToken(
     this.globalContext.get("indexingPaused") === true,
@@ -84,7 +86,6 @@ export class Core {
   constructor(
     private readonly messenger: IMessenger<ToCoreProtocol, FromCoreProtocol>,
     private readonly ide: IDE,
-    private readonly onWrite: (text: string) => Promise<void> = async () => {},
   ) {
     // Ensure .continue directory is created
     migrateV1DevDataFiles();
@@ -105,7 +106,7 @@ export class Core {
     this.configHandler = new ConfigHandler(
       this.ide,
       ideSettingsPromise,
-      this.onWrite,
+      this.llmLogger,
       sessionInfoPromise,
       (orgId: string | null) => {
         void messenger.request("didSelectOrganization", {

@@ -23,6 +23,8 @@ class Calculator {
       throw new Error("Cannot divide by zero");
     }
     this.result /= number;
+    console.log(this.result);
+
     return this;
   }
 

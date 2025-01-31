@@ -3,6 +3,7 @@
  */
 import { ConfigHandler } from "../../config/ConfigHandler.js";
 import { SiteIndexingConfig } from "../../index.js";
+import { LLMLogger } from "../../llm/logger.js";
 import FileSystemIde from "../../util/filesystem.js";
 import { editConfigJson } from "../../util/paths.js";
 
@@ -49,6 +50,7 @@ describe.skip("DocsService Integration Tests", () => {
     configHandler = new ConfigHandler(
       ide,
       ideSettingsPromise,
+      new LLMLogger(),
       async () => {},
       Promise.resolve(undefined),
     );

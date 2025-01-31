@@ -597,6 +597,13 @@
           "title": "Continue",
           "icon": "media/sidebar-icon.png"
         }
+      ],
+      "panel": [
+        {
+          "id": "continueLog",
+          "title": "Continue LLM Log",
+          "icon": "media/sidebar-icon.png"
+        }
       ]
     },
     "views": {
@@ -606,6 +613,14 @@
           "id": "continue.continueGUIView",
           "name": "Continue",
           "icon": "media/sidebar-icon.png",
+          "visibility": "visible"
+        }
+      ],
+      "continueLog": [
+        {
+          "type": "webview",
+          "id": "continue.continueLogView",
+          "name": "",
           "visibility": "visible"
         }
       ]

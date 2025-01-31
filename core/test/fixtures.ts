@@ -1,6 +1,7 @@
 import { ConfigHandler } from "../config/ConfigHandler";
 import { ControlPlaneClient } from "../control-plane/client";
 import Mock from "../llm/llms/Mock";
+import { LLMLogger } from "../llm/logger";
 import FileSystemIde from "../util/filesystem";
 
 import { TEST_DIR } from "./testDir";
@@ -19,6 +20,8 @@ export const testConfigHandler = new ConfigHandler(
   ideSettingsPromise,
   async (text) => {},
   Promise.resolve(undefined),
+  new LLMLogger(),
+  testControlPlaneClient,
 );
 
 export const testLLM = new Mock({

@@ -1,7 +1,7 @@
 import { AssistantUnrolled, ConfigResult } from "@continuedev/config-yaml";
 
 import { ControlPlaneClient } from "../../control-plane/client.js";
-import { ContinueConfig, IDE, IdeSettings } from "../../index.js";
+import { ContinueConfig, IDE, IdeSettings, ILLMLogger } from "../../index.js";
 
 import { ProfileDescription } from "../ProfileLifecycleManager.js";
 
@@ -31,7 +31,7 @@ export default class PlatformProfileLoader implements IProfileLoader {
     private readonly controlPlaneClient: ControlPlaneClient,
     private readonly ide: IDE,
     private ideSettingsPromise: Promise<IdeSettings>,
-    private writeLog: (message: string) => Promise<void>,
+    private llmLogger: ILLMLogger,
     private readonly onReload: () => void,
     readonly description: ProfileDescription,
   ) {}
@@ -45,7 +45,7 @@ export default class PlatformProfileLoader implements IProfileLoader {
     controlPlaneClient: ControlPlaneClient,
     ide: IDE,
     ideSettingsPromise: Promise<IdeSettings>,
-    writeLog: (message: string) => Promise<void>,
+    llmLogger: ILLMLogger,
     onReload: () => void,
   ): Promise<PlatformProfileLoader> {
     const controlPlaneEnv = await getControlPlaneEnv(ideSettingsPromise);
@@ -73,7 +73,7 @@ export default class PlatformProfileLoader implements IProfileLoader {
       controlPlaneClient,
       ide,
       ideSettingsPromise,
-      writeLog,
+      llmLogger,
       onReload,
       description,
     );
@@ -92,7 +92,7 @@ export default class PlatformProfileLoader implements IProfileLoader {
       this.ide,
       this.ideSettingsPromise,
       this.controlPlaneClient,
-      this.writeLog,
+      this.llmLogger,
       undefined,
       this.configResult.config,
       {
