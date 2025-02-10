@@ -60,12 +60,16 @@ export class ProfileLifecycleManager {
     this.savedBrowserConfigResult = undefined;
     this.pendingConfigPromise = undefined;
 
-    return this.loadConfig(additionalContextProviders, ideSettingsPromise, true);
+    return this.loadConfig(
+      additionalContextProviders,
+      ideSettingsPromise,
+      true,
+    );
   }
 
   async loadConfig(
-    ideSettingsPromise: Promise<IdeSettings>,
     additionalContextProviders: IContextProvider[],
+    ideSettingsPromise: Promise<IdeSettings>,
     forceReload: boolean = false,
   ): Promise<ConfigResult<ContinueConfig>> {
     // If we already have a config, return it
@@ -120,8 +124,8 @@ export class ProfileLifecycleManager {
       return this.savedBrowserConfigResult;
     } else {
       const result = await this.loadConfig(
-        ideSettingsPromise,
         additionalContextProviders,
+        ideSettingsPromise,
       );
       if (!result.config) {
         return {

@@ -1,4 +1,4 @@
-import { IDE } from "..";
+import { IDE, SerializedContinueConfig } from "..";
 import { deduplicateArray } from "../util";
 import { GlobalContext } from "../util/GlobalContext";
 import { editConfigJson } from "../util/paths";

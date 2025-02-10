@@ -372,7 +372,10 @@ export class ConfigHandler {
     // TODO: this isn't right, there are two different senses in which you want to "reload"
 
     const { config, errors, configLoadInterrupted } =
-      await this.currentProfile.reloadConfig(this.additionalContextProviders, this.ideSettingsPromise);
+      await this.currentProfile.reloadConfig(
+        this.additionalContextProviders,
+        this.ideSettingsPromise,
+      );
 
     if (config) {
       this.inactiveProfiles.forEach((profile) => profile.clearConfig());
@@ -397,8 +400,8 @@ export class ConfigHandler {
 
   async loadConfig(): Promise<ConfigResult<ContinueConfig>> {
     return this.currentProfile.loadConfig(
-      this.ideSettingsPromise,
       this.additionalContextProviders,
+      this.ideSettingsPromise,
     );
   }
 

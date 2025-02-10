@@ -64,6 +64,7 @@ function MorePage() {
                 await dispatch(
                   saveCurrentSession({
                     openNewSession: true,
+                    generateTitle: true,
                   }),
                 );
                 ideMessenger.post("showSetupWizard", undefined);
