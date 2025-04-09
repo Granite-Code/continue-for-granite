@@ -15,6 +15,7 @@ import { Core } from "core/core";
 import { LOCAL_DEV_DATA_VERSION } from "core/data/log";
 import { walkDirAsync } from "core/indexing/walkDir";
 import { isModelInstaller } from "core/llm";
+import { extractMinimalStackTraceInfo } from "core/util/extractMinimalStackTraceInfo";
 import { startLocalOllama } from "core/util/ollamaHelper";
 import { getDevDataFilePath } from "core/util/paths";
 import { Telemetry } from "core/util/posthog";
@@ -1036,7 +1037,7 @@ const getCommandsMap: (
   };
 };
 
-const registerCopyBufferSpy = (
+const registerCopyBufferService = (
   context: vscode.ExtensionContext,
   core: Core,
 ) => {
@@ -1127,8 +1128,6 @@ export function registerAllCommands(
   core: Core,
   editDecorationManager: EditDecorationManager,
 ) {
-  registerCopyBufferSpy(context, core);
-
   for (const [command, callback] of Object.entries(
     getCommandsMap(
       ide,
@@ -1147,5 +1146,29 @@ export function registerAllCommands(
     context.subscriptions.push(
       vscode.commands.registerCommand(command, callback),
     );
+  }
+
+  try {
+    registerCopyBufferService(context, core);
+  } catch (e: any) {
+    //Non-critical error, it needs to be intercepted and not prevent the extension from starting
+    console.log("Error registering CopyBufferService: ", e);
+    Telemetry.capture(
+      "vscode_extension_activation_error",
+      {
+        stack: extractMinimalStackTraceInfo(e.stack),
+        message: e.message,
+      },
+      false,
+      true,
+    );
+    vscode.window.showWarningMessage(
+      "Failed to override 'editor.action.clipboardCopyAction'. Continue will not have access to the clipboard.",
+      "View Logs",
+    ).then((selection) => {
+      if (selection === "View Logs") {
+        vscode.commands.executeCommand("continue.viewLogs");
+      }
+    });
   }
 }
