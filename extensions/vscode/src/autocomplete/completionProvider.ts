@@ -5,7 +5,6 @@ import {
   type AutocompleteOutcome,
 } from "core/autocomplete/util/types";
 import { ConfigHandler } from "core/config/ConfigHandler";
-import { startLocalOllama } from "core/util/ollamaHelper";
 import * as URI from "uri-js";
 import { v4 as uuidv4 } from "uuid";
 import * as vscode from "vscode";
@@ -33,7 +32,8 @@ interface VsCodeCompletionInput {
 }
 
 export class ContinueCompletionProvider
-  implements vscode.InlineCompletionItemProvider {
+  implements vscode.InlineCompletionItemProvider
+{
   private onError(e: any) {
     if (handleLLMError(e)) {
       return;
@@ -88,7 +88,6 @@ export class ContinueCompletionProvider
 
   _lastShownCompletion: AutocompleteOutcome | undefined;
 
-
   public async provideInlineCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position,
@@ -112,26 +111,7 @@ export class ContinueCompletionProvider
       return null;
     }
 
-    const selectedCompletionInfo = context.selectedCompletionInfo;
-
-    // This code checks if there is a selected completion suggestion in the given context and ensures that it is valid
-    // To improve the accuracy of suggestions it checks if the user has typed at least 4 characters
-    // This helps refine and filter out irrelevant autocomplete options
-    if (selectedCompletionInfo) {
-      const { text, range } = selectedCompletionInfo;
-      const typedText = document.getText(range);
-
-      const typedLength = range.end.character - range.start.character;
-
-      if (typedLength < 4) {
-        return null;
-      }
-
-      if (!text.startsWith(typedText)) {
-        return null;
-      }
-    }
-    let injectDetails: string | undefined = undefined;
+      let injectDetails: string | undefined = undefined;
 
     try {
       const abortController = new AbortController();
@@ -188,7 +168,6 @@ export class ContinueCompletionProvider
         pos,
         manuallyPassFileContents,
         manuallyPassPrefix,
-        selectedCompletionInfo,
         injectDetails,
         isUntitledFile: document.isUntitled,
         completionId: uuidv4(),
@@ -209,6 +188,8 @@ export class ContinueCompletionProvider
         return null;
       }
 
+      const selectedCompletionInfo = context.selectedCompletionInfo;
+
       // VS Code displays dependent on selectedCompletionInfo (their docstring below)
       // We should first always make sure we have a valid completion, but if it goes wrong we
       // want telemetry to be correct
@@ -223,13 +204,30 @@ export class ContinueCompletionProvider
        * Inline completion providers are requested again whenever the selected item changes.
        */
       if (selectedCompletionInfo) {
-        outcome.completion = selectedCompletionInfo.text + outcome.completion;
+        const { range, text } = selectedCompletionInfo;
+
+        if (editor) {
+          const documentText = editor.document.getText(range);
+
+          if (text.startsWith(documentText)) {
+            let partialText = documentText;
+
+            if (partialText.length !== text.length || outcome.completion.startsWith(" .") || partialText.endsWith(".")){
+
+            outcome.completion=outcome.completion.trimStart();
+            }
+            outcome.completion = partialText + outcome.completion;
+
+          }
+        }
       }
+
       const willDisplay = this.willDisplay(
         document,
         selectedCompletionInfo,
         signal,
         outcome,
+        editor,
       );
       if (!willDisplay) {
         return null;
@@ -241,7 +239,9 @@ export class ContinueCompletionProvider
 
       // Construct the range/text to show
       const startPos = selectedCompletionInfo?.range.start ?? position;
-      let range = new vscode.Range(startPos, startPos);
+      // let range = new vscode.Range(startPos, startPos);
+      let range =
+        selectedCompletionInfo?.range ?? new vscode.Range(startPos, startPos);
       let completionText = outcome.completion;
       const isSingleLineCompletion = outcome.completion.split("\n").length <= 1;
 
@@ -296,15 +296,19 @@ export class ContinueCompletionProvider
     selectedCompletionInfo: vscode.SelectedCompletionInfo | undefined,
     abortSignal: AbortSignal,
     outcome: AutocompleteOutcome,
+    editor: vscode.TextEditor | undefined,
   ): boolean {
     if (selectedCompletionInfo) {
       const { text, range } = selectedCompletionInfo;
-      if (!outcome.completion.startsWith(text)) {
-        console.log(
-          `Won't display completion because text doesn't match: ${text}, ${outcome.completion}`,
-          range,
-        );
-        return false;
+      if (editor) {
+        const documentText = editor.document.getText(range);
+        if (!outcome.completion.startsWith(documentText)) {
+          console.log(
+            `Won't display completion because text doesn't match: ${documentText}, ${outcome.completion}`,
+            range,
+          );
+          return false;
+        }
       }
     }
 
