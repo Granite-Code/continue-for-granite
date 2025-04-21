@@ -985,6 +985,11 @@ const getCommandsMap: (
         client.sendFeedback(feedback, lastLines);
       }
     },
+    "continue.runAutocompleteBenchmark": async () => {
+  const { runAutocompleteTest } =
+    await import("../../vscode/src/test/benchmark/testAutocomplete");
+  await runAutocompleteTest(configHandler, ide, sidebar.webviewProtocol);
+},
     "continue.navigateTo": (path: string, toggle: boolean) => {
       sidebar.webviewProtocol?.request("navigateTo", { path, toggle });
       focusGUI();

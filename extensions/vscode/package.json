@@ -324,7 +324,13 @@
         "category": "Continue",
         "title": "Focus Continue Chat",
         "group": "Continue"
-      }
+      },
+      {
+        "command": "continue.runAutocompleteBenchmark",
+        "category": "Continue",
+        "title": "Continue: Run Autocomplete Benchmark",
+        "group": "Continue"
+     }
     ],
     "keybindings": [
       {
