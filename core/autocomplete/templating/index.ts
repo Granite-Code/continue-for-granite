@@ -4,6 +4,7 @@ import { CompletionOptions } from "../..";
 import { AutocompleteLanguageInfo } from "../constants/AutocompleteLanguageInfo";
 import { HelperVars } from "../util/HelperVars";
 
+import { SourceFragment } from "../../util/SourceFragment";
 import { SnippetPayload } from "../snippets";
 import {
   AutocompleteTemplate,
@@ -110,11 +111,16 @@ export function renderPrompt({
           helper.workspaceUris,
         );
 
-  const stopTokens = getStopTokens(
+  // Some models don't stop at the suffix and just keep going, so extract the first line
+  // of the suffix and add it as a stop token sequence
+  const suffixFragment = new SourceFragment(suffix);
+  const [suffixStart = ""] = suffixFragment.head(1, { ignoreWhitespace: true });
+
+  const stopTokens = [...getStopTokens(
     completionOptions,
     helper.lang,
     helper.modelName,
-  );
+  ), suffixStart];
 
   return {
     prompt,
