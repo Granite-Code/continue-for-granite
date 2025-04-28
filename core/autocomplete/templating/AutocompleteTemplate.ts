@@ -50,6 +50,21 @@ const stableCodeFimTemplate: AutocompleteTemplate = {
   },
 };
 
+const graniteCodeFimTemplate: AutocompleteTemplate = {
+  template: "Please keep response conside and scope of response limited. If no good completion exists, do not answer:\n<fim_prefix>{{{prefix}}}<fim_suffix>{{{suffix}}}<fim_middle>",
+  completionOptions: {
+    stop: [
+      "<fim_prefix>",
+      "<fim_suffix>",
+      "<fim_middle>",
+      "<file_sep>",
+      "<|endoftext|>",
+      "</fim_middle>",
+      "</code>",
+    ],
+  },
+};
+
 // https://github.com/QwenLM/Qwen2.5-Coder?tab=readme-ov-file#3-file-level-code-completion-fill-in-the-middle
 // This issue asks about the use of <|repo_name|> and <|file_sep|> together with <|fim_prefix|>, <|fim_suffix|> and <|fim_middle|>
 // https://github.com/QwenLM/Qwen2.5-Coder/issues/343
@@ -395,12 +410,16 @@ export function getTemplateForModel(model: string): AutocompleteTemplate {
     return codegeexFimTemplate;
   }
 
+  if (lowerCaseModel.includes("granite")) {
+    if (/(granite[^0-9]*3\.([0-2]))|granite-3\.([0-2])/i.test(lowerCaseModel))
+      return holeFillerTemplate;
+    return graniteCodeFimTemplate;
+  }
+
   if (
     lowerCaseModel.includes("gpt") ||
     lowerCaseModel.includes("davinci-002") ||
-    lowerCaseModel.includes("claude") ||
-    lowerCaseModel.includes("granite3") ||
-    lowerCaseModel.includes("granite-3")
+    lowerCaseModel.includes("claude")
   ) {
     return holeFillerTemplate;
   }
