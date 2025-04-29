@@ -122,3 +122,14 @@ export function getExtensionVersion(): string {
   const extension = vscode.extensions.getExtension("continue.continue");
   return extension?.packageJSON.version || "0.1.0";
 }
+
+export function lineOffset(
+  lines: string[],
+  pos: { line: number; character: number }
+): number {
+  let offset = 0;
+  for (let i = 0; i < pos.line; i++) {
+    offset += lines[i].length + 1;
+  }
+  return offset + pos.character;
+}

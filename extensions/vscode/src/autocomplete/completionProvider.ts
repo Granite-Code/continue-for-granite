@@ -197,6 +197,7 @@ export class ContinueCompletionProvider
           await this.recentlyEditedTracker.getRecentlyEditedRanges(),
       };
 
+      console.log("Autocomplete Input to the model: ", input);
       setupStatusBar(undefined, true);
       const outcome =
         await this.completionProvider.provideInlineCompletionItems(
@@ -238,6 +239,7 @@ export class ContinueCompletionProvider
       this.completionProvider.markDisplayed(input.completionId, outcome);
       this._lastShownCompletion = outcome;
 
+      console.log("Autocomplete Outcome from the model: ", outcome);
       // Construct the range/text to show
       const startPos = selectedCompletionInfo?.range.start ?? position;
       let range = new vscode.Range(startPos, startPos);

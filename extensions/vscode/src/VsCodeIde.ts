@@ -12,6 +12,7 @@ import { executeGotoProvider } from "./autocomplete/lsp";
 import { Repository } from "./otherExtensions/git";
 import { SecretStorage } from "./stubs/SecretStorage";
 import { VsCodeIdeUtils } from "./util/ideUtils";
+import { lineOffset } from "./util/util";
 import { getExtensionUri, openEditorAndRevealRange } from "./util/vscode";
 import { VsCodeWebviewProtocol } from "./webviewProtocol";
 
@@ -41,6 +42,17 @@ class VsCodeIde implements IDE {
   ) {
     this.ideUtils = new VsCodeIdeUtils();
     this.secretStorage = new SecretStorage(context);
+  }
+
+  private maskedRanges: { fileUri: string; range: Range }[] = [];
+
+  public addMaskedRange(fileUri: string, range: vscode.Range): void {
+    this.maskedRanges = [...this.maskedRanges, { fileUri, range }];
+  }
+  public removeMaskedRange(fileUri: string): void {
+    this.maskedRanges = this.maskedRanges.filter(
+      (maskedRange) => maskedRange.fileUri !== fileUri,
+    );
   }
 
   public updateLastFileSaveTimestamp(): void {
@@ -322,11 +334,22 @@ class VsCodeIde implements IDE {
   }
 
   readRangeInFile(fileUri: string, range: Range): Promise<string> {
+    if (this.maskedRanges.length === 0) {
+      return this.ideUtils.readRangeInFile(
+        vscode.Uri.parse(fileUri),
+        new vscode.Range(
+          new vscode.Position(range.start.line, range.start.character),
+          new vscode.Position(range.end.line, range.end.character),
+        ),
+      );
+    }
+    const mask = this.maskedRanges[0];
+
     return this.ideUtils.readRangeInFile(
       vscode.Uri.parse(fileUri),
       new vscode.Range(
         new vscode.Position(range.start.line, range.start.character),
-        new vscode.Position(range.end.line, range.end.character),
+        new vscode.Position(mask.range.start.line, mask.range.start.character),
       ),
     );
   }
@@ -486,6 +509,7 @@ class VsCodeIde implements IDE {
 
   async readFile(fileUri: string): Promise<string> {
     try {
+      let contents: string;
       const uri = vscode.Uri.parse(fileUri);
 
       // First, check whether it's a notebook document
@@ -509,7 +533,8 @@ class VsCodeIde implements IDE {
         URI.equal(doc.uri.toString(), uri.toString()),
       );
       if (openTextDocument !== undefined) {
-        return openTextDocument.getText();
+        // return openTextDocument.getText();
+        contents = openTextDocument.getText();
       }
 
       const fileStats = await vscode.workspace.fs.stat(uri);
@@ -521,8 +546,24 @@ class VsCodeIde implements IDE {
 
       // Truncate the buffer to the first MAX_BYTES
       const truncatedBytes = bytes.slice(0, VsCodeIde.MAX_BYTES);
-      const contents = new TextDecoder().decode(truncatedBytes);
-      return contents;
+      contents = new TextDecoder().decode(truncatedBytes);
+
+      const masks = this.maskedRanges
+        .filter((maskedRanges) => maskedRanges.fileUri === fileUri)
+        .map((maskedRanges) => maskedRanges.range);
+      if (masks.length === 0) {
+        return contents;
+      }
+
+      const mask = masks[0];
+      const lines = contents.split("\n");
+
+      // calc character offsets
+      const startOffset =lineOffset(lines, mask.start);
+      const endOffset = lineOffset(lines, mask.end);
+
+      // drop [startOffset, endOffset]
+      return contents.slice(0, startOffset) + contents.slice(endOffset);
     } catch (e) {
       return "";
     }
