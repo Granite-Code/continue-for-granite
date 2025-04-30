@@ -52,6 +52,10 @@ export const DEFAULT_MODEL_GRANITE_SMALL: ModelConfig = {
   provider: "ollama",
   model: "granite3.2:2b",
   ...BASE_GRANITE_CONFIG,
+  defaultCompletionOptions: {
+    ...BASE_GRANITE_CONFIG.defaultCompletionOptions,
+    maxTokens: 64,
+  },
 };
 
 export const DEFAULT_MODEL_GRANITE_LARGE: ModelConfig = {
@@ -59,6 +63,10 @@ export const DEFAULT_MODEL_GRANITE_LARGE: ModelConfig = {
   provider: "ollama",
   model: "granite3.2:8b",
   ...BASE_GRANITE_CONFIG,
+  defaultCompletionOptions: {
+    ...BASE_GRANITE_CONFIG.defaultCompletionOptions,
+    maxTokens: 64,
+  },
 };
 
 export const DEFAULT_GRANITE_EMBEDDING_MODEL: ModelConfig = {
