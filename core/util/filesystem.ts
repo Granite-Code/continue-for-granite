@@ -205,6 +205,18 @@ class FileSystemIde implements IDE {
     return Promise.resolve();
   }
 
+  private maskedRanges: { fileUri: string; range: Range }[] = [];
+
+  public addMaskedRange(fileUri: string, range: Range): void {
+    this.maskedRanges.push({ fileUri, range });
+  }
+
+  public removeMaskedRange(fileUri: string): void {
+    this.maskedRanges = this.maskedRanges.filter(
+      (m) => m.fileUri !== fileUri
+    );
+  }
+
   readFile(fileUri: string): Promise<string> {
     const filepath = fileURLToPath(fileUri);
     return new Promise((resolve, reject) => {

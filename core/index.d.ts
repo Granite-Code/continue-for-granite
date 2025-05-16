@@ -769,9 +769,9 @@ export interface IDE {
 
   readRangeInFile(fileUri: string, range: Range): Promise<string>;
 
-  addMaskedRange?(fileUri: string, range: Range): void;
+  addMaskedRange(fileUri: string, range: Range): void;
 
-  removeMaskedRange?(fileUri: string): void;
+  removeMaskedRange(fileUri: string): void;
 
   showLines(fileUri: string, startLine: number, endLine: number): Promise<void>;
 

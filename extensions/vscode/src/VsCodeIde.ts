@@ -1,20 +1,20 @@
 import * as child_process from "node:child_process";
-import { exec } from "node:child_process";
+import {exec} from "node:child_process";
 
-import { Range } from "core";
-import { EXTENSION_NAME } from "core/control-plane/env";
-import { GetGhTokenArgs } from "core/protocol/ide";
-import { editConfigFile, getConfigJsonPath } from "core/util/paths";
+import {Range} from "core";
+import {EXTENSION_NAME} from "core/control-plane/env";
+import {GetGhTokenArgs} from "core/protocol/ide";
+import {editConfigFile, getConfigJsonPath} from "core/util/paths";
 import * as URI from "uri-js";
 import * as vscode from "vscode";
 
-import { executeGotoProvider } from "./autocomplete/lsp";
-import { Repository } from "./otherExtensions/git";
-import { SecretStorage } from "./stubs/SecretStorage";
-import { VsCodeIdeUtils } from "./util/ideUtils";
-import { lineOffset } from "./util/util";
-import { getExtensionUri, openEditorAndRevealRange } from "./util/vscode";
-import { VsCodeWebviewProtocol } from "./webviewProtocol";
+import {executeGotoProvider} from "./autocomplete/lsp";
+import {Repository} from "./otherExtensions/git";
+import {SecretStorage} from "./stubs/SecretStorage";
+import {VsCodeIdeUtils} from "./util/ideUtils";
+import {lineOffset} from "./util/util";
+import {getExtensionUri, openEditorAndRevealRange} from "./util/vscode";
+import {VsCodeWebviewProtocol} from "./webviewProtocol";
 
 import type {
   ContinueRcJson,
@@ -47,7 +47,7 @@ class VsCodeIde implements IDE {
   private maskedRanges: { fileUri: string; range: Range }[] = [];
 
   public addMaskedRange(fileUri: string, range: vscode.Range): void {
-    this.maskedRanges = [...this.maskedRanges, { fileUri, range }];
+    this.maskedRanges.push({ fileUri, range });
   }
   public removeMaskedRange(fileUri: string): void {
     this.maskedRanges = this.maskedRanges.filter(
@@ -533,7 +533,6 @@ class VsCodeIde implements IDE {
         URI.equal(doc.uri.toString(), uri.toString()),
       );
       if (openTextDocument !== undefined) {
-        // return openTextDocument.getText();
         contents = openTextDocument.getText();
       }
 
@@ -815,4 +814,5 @@ class VsCodeIde implements IDE {
   }
 }
 
-export { VsCodeIde };
+export {VsCodeIde};
+

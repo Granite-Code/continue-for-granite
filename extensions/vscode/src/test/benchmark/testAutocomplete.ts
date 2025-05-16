@@ -1,72 +1,74 @@
-import type { ConfigHandler } from "core/config/ConfigHandler";
-import type { IDE } from "core/index";
+import type {ConfigHandler} from "core/config/ConfigHandler";
+import type {IDE} from "core/index";
+import {distance} from "fastest-levenshtein";
 import * as vscode from "vscode";
-import { ContinueCompletionProvider } from "../../autocomplete/completionProvider";
-import type { VsCodeWebviewProtocol } from "../../webviewProtocol";
+import {ContinueCompletionProvider} from "../../autocomplete/completionProvider";
+import type {VsCodeWebviewProtocol} from "../../webviewProtocol";
 
-export async function runAutocompleteTest(
+export interface MaskResult {
+  project: string;
+  file: string;
+  maskIndex: number;
+  // start: { line: number; char: number };
+  // end: { line: number; char: number };
+  maskedChunk: string;
+  completion: string | null;
+  similarity: number;
+}
+
+function cleanString(str: string): string {
+  return str.replace(/\\/g, "").replace(/\n/g, ""); //removes newlines, backslashes
+}
+
+// generate random ranges within the document
+function generateRandomMasks(
+  document: vscode.TextDocument,
+  count = 10,
+  min_mask = 1,
+  max_mask = 3,
+): vscode.Range[] {
+  let m_w = 0.55,
+    m_z = 0.55;
+  function rnd(): number {
+    m_w = (m_w * 1103515245 + 12345) % 4294967296;
+    m_z = (m_z * 69069 + 1234567) % 4294967296;
+    return ((m_w + m_z) % 4294967296) / 4294967296;
+  }
+  // pick 10 random masks with ranges between 1-3 lines
+  const masks: vscode.Range[] = [];
+  const lineCount = document.lineCount;
+
+  for (let i = 0; i < count; i++) {
+    const randomLine = Math.floor(rnd() * lineCount);
+    const randomChar = Math.floor(
+      rnd() * (document.lineAt(randomLine).text.length + 1),
+    );
+    const start = new vscode.Position(randomLine, randomChar);
+
+    const maskLines = Math.floor(rnd() * (max_mask - min_mask + 1)) + min_mask;
+    const endLine = Math.min(lineCount - 1, randomLine + maskLines);
+    const endChar = document.lineAt(endLine).text.length;
+    const end = new vscode.Position(endLine, endChar);
+
+    masks.push(new vscode.Range(start, end));
+  }
+
+  return masks;
+}
+
+// run the autocomplete tests for a single document
+export async function testAutocomplete(
+  document: vscode.TextDocument,
+  projectName: string,
   configHandler: ConfigHandler,
   ide: IDE,
   webviewProtocol: VsCodeWebviewProtocol,
-) {
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) {
-    return vscode.window.showErrorMessage("no editor");
-  }
+): Promise<MaskResult[]> {
+  const uri = document.uri.toString();
+  const fullText = document.getText();
+  const masks = generateRandomMasks(document);
 
-  // grab document and choose a random line and character
-  const document = editor.document;
-  const lineCount = document.lineCount;
-  const randomLine = Math.floor(Math.random() * lineCount);
-  const lineText = document.lineAt(randomLine).text;
-  const randomChar = Math.floor(Math.random() * (lineText.length + 1));
-  const position = new vscode.Position(randomLine, randomChar);
-  console.log("random cursor postion: ", position);
-
-  const uriString = document.uri.toString();
-  const start = new vscode.Position(randomLine, randomChar);
-
-  // const fullText = document.getText();
-  // const startOffset = document.offsetAt(start);
-  // const remaining = fullText.length - startOffset;
-  // const MIN_MASK = 20;
-  // const MAX_MASK = 50;
-  // let maskLength =
-  //   Math.floor(Math.random() * (MAX_MASK - MIN_MASK + 1)) + MIN_MASK;
-
-  // maskLength = Math.min(maskLength, remaining);
-  // console.log("mask length: ", maskLength);
-
-  //calculate the end position from that offset
-  // const endOffset = startOffset + maskLength;
-  // const end = document.positionAt(endOffset);
-  // const maskedChunk = fullText.slice(startOffset, endOffset);
-  // console.log("masked chunk of code: ", maskedChunk);
-
-  // ide.addMaskedRange?.(uriString, new vscode.Range(start, end));
-  ///////
-
-  //lines to mask (1–3)
-  const MAX_LINES = 3;
-  const maskLines = Math.floor(Math.random() * MAX_LINES) + 1;
-  console.log("number of lines masked", maskLines);
-
-  //calculate the end line
-  const endLine = Math.min(document.lineCount - 1, randomLine + maskLines);
-  const endChar = document.lineAt(endLine).text.length;
-
-  //build the mask and apply it
-  const end = new vscode.Position(endLine, endChar);
-  ide.addMaskedRange?.(uriString, new vscode.Range(start, end));
-
-  ////////
-
-  //create inline completion provider
-  const provider = new ContinueCompletionProvider(
-    configHandler,
-    ide,
-    webviewProtocol,
-  );
+  const results: MaskResult[] = [];
 
   const channel = vscode.window.createOutputChannel("Autocomplete Test");
   channel.clear();
@@ -78,13 +80,76 @@ export async function runAutocompleteTest(
     selectedCompletionInfo: undefined,
   };
 
-  //invoke provider at random position
-  const items = await provider.provideInlineCompletionItems(
-    document,
-    position,
-    context,
-    tokenSource.token,
-  );
+  // iterate each mask, clear old, apply new, run completion, logging
+  for (let i = 0; i < masks.length; i++) {
+    const provider = new ContinueCompletionProvider(
+      configHandler,
+      ide,
+      webviewProtocol,
+    );
+    const mask = masks[i];
 
-  console.log("autocomplete items: ", items);
+    // clear previous masks if exists
+    ide.removeMaskedRange?.(uri);
+
+    // apply this mask
+    ide.addMaskedRange(uri, mask);
+
+    const startOffset = document.offsetAt(mask.start);
+    const endOffset = document.offsetAt(mask.end);
+    // console.log(`RAW MASK: ${fullText.slice(startOffset, endOffset)} CLEAN MASK: ${cleanString(fullText.slice(startOffset, endOffset))} `)
+    const maskedChunk = cleanString(fullText.slice(startOffset, endOffset));
+
+    // logging mask details
+    channel.appendLine(`\nMask ${i + 1}`);
+    channel.appendLine(
+      `start: line ${mask.start.line}, char ${mask.start.character}`,
+    );
+    channel.appendLine(
+      `end: line ${mask.end.line}, char ${mask.end.character}`,
+    );
+    channel.appendLine(`masked chunk: ${maskedChunk}`);
+
+    // run completion
+    const items = await provider.provideInlineCompletionItems(
+      document,
+      mask.start,
+      context,
+      tokenSource.token,
+    );
+
+    // compute similarity
+    let completion: string | null = null;
+    let similarity = 0;
+    if (items && items.length > 0 && items[0]?.insertText) {
+      // console.log(`RAW COMPLETION: ${items[0].insertText} CLEAN COMPLETION: ${cleanString(items[0].insertText)} `)
+      completion = cleanString(items[0].insertText);
+      channel.appendLine(`autocompletion item: ${completion}`);
+      // const dist = distance(maskedChunk, completion);
+      // const longerString = Math.max(maskedChunk.length, completion.length);
+      // similarityScore = longerString === 0 ? 1 : 1 - dist / longerString;
+
+
+      const dist = distance(maskedChunk, completion);
+      const totalLength = maskedChunk.length + completion.length;
+      similarity = totalLength === 0 ? 1 : 1 - dist / totalLength;
+
+      channel.appendLine(`similarity score: ${similarity}`);
+    }
+
+    results.push({
+      project: projectName,
+      file: document.uri.fsPath,
+      maskIndex: i,
+      // start:      { line: masks[i].start.line, char: masks[i].start.character },
+      // end:        { line: masks[i].end.line,   char: masks[i].end.character   },
+      maskedChunk,
+      completion,
+      similarity,
+    });
+  }
+
+  // cleanup last mask
+  ide.removeMaskedRange?.(uri);
+  return results;
 }

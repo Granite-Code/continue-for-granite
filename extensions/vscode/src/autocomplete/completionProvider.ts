@@ -1,21 +1,21 @@
-import { CompletionProvider } from "core/autocomplete/CompletionProvider";
-import { processSingleLineCompletion } from "core/autocomplete/util/processSingleLineCompletion";
+import {CompletionProvider} from "core/autocomplete/CompletionProvider";
+import {processSingleLineCompletion} from "core/autocomplete/util/processSingleLineCompletion";
 import {
   type AutocompleteInput,
   type AutocompleteOutcome,
 } from "core/autocomplete/util/types";
-import { ConfigHandler } from "core/config/ConfigHandler";
+import {ConfigHandler} from "core/config/ConfigHandler";
 import * as URI from "uri-js";
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4} from "uuid";
 import * as vscode from "vscode";
 
-import { handleLLMError } from "../util/errorHandling";
-import { showFreeTrialLoginMessage } from "../util/messages";
-import { VsCodeWebviewProtocol } from "../webviewProtocol";
+import {handleLLMError} from "../util/errorHandling";
+import {showFreeTrialLoginMessage} from "../util/messages";
+import {VsCodeWebviewProtocol} from "../webviewProtocol";
 
-import { getDefinitionsFromLsp } from "./lsp";
-import { RecentlyEditedTracker } from "./recentlyEdited";
-import { RecentlyVisitedRangesService } from "./RecentlyVisitedRangesService";
+import {getDefinitionsFromLsp} from "./lsp";
+import {RecentlyEditedTracker} from "./recentlyEdited";
+import {RecentlyVisitedRangesService} from "./RecentlyVisitedRangesService";
 import {
   StatusBarStatus,
   getStatusBarStatus,
@@ -23,7 +23,7 @@ import {
   stopStatusBarLoading,
 } from "./statusBar";
 
-import type { IDE } from "core";
+import type {IDE} from "core";
 
 interface VsCodeCompletionInput {
   document: vscode.TextDocument;
@@ -197,7 +197,6 @@ export class ContinueCompletionProvider
           await this.recentlyEditedTracker.getRecentlyEditedRanges(),
       };
 
-      console.log("Autocomplete Input to the model: ", input);
       setupStatusBar(undefined, true);
       const outcome =
         await this.completionProvider.provideInlineCompletionItems(
@@ -239,7 +238,6 @@ export class ContinueCompletionProvider
       this.completionProvider.markDisplayed(input.completionId, outcome);
       this._lastShownCompletion = outcome;
 
-      console.log("Autocomplete Outcome from the model: ", outcome);
       // Construct the range/text to show
       const startPos = selectedCompletionInfo?.range.start ?? position;
       let range = new vscode.Range(startPos, startPos);

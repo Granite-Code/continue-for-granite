@@ -687,6 +687,7 @@
     "downshift": "^7.6.0",
     "esbuild": "0.17.19",
     "express": "^4.18.2",
+    "fastest-levenshtein": "^1.0.16",
     "fkill": "^8.1.0",
     "follow-redirects": "^1.15.4",
     "handlebars": "^4.7.8",

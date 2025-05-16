@@ -7,17 +7,17 @@ import {
   ModelInstaller,
   RangeInFileWithContents,
 } from "core";
-import { CompletionProvider } from "core/autocomplete/CompletionProvider";
-import { ConfigHandler } from "core/config/ConfigHandler";
-import { ContinueServerClient } from "core/continueServer/stubs/client";
-import { EXTENSION_NAME } from "core/control-plane/env";
-import { Core } from "core/core";
-import { LOCAL_DEV_DATA_VERSION } from "core/data/log";
-import { walkDirAsync } from "core/indexing/walkDir";
-import { isModelInstaller } from "core/llm";
-import { startLocalOllama } from "core/util/ollamaHelper";
-import { getDevDataFilePath } from "core/util/paths";
-import { Telemetry } from "core/util/posthog";
+import {CompletionProvider} from "core/autocomplete/CompletionProvider";
+import {ConfigHandler} from "core/config/ConfigHandler";
+import {ContinueServerClient} from "core/continueServer/stubs/client";
+import {EXTENSION_NAME} from "core/control-plane/env";
+import {Core} from "core/core";
+import {LOCAL_DEV_DATA_VERSION} from "core/data/log";
+import {walkDirAsync} from "core/indexing/walkDir";
+import {isModelInstaller} from "core/llm";
+import {startLocalOllama} from "core/util/ollamaHelper";
+import {getDevDataFilePath} from "core/util/paths";
+import {Telemetry} from "core/util/posthog";
 import readLastLines from "read-last-lines";
 import * as vscode from "vscode";
 
@@ -30,16 +30,16 @@ import {
   setupStatusBar,
   StatusBarStatus,
 } from "./autocomplete/statusBar";
-import { ContinueConsoleWebviewViewProvider } from "./ContinueConsoleWebviewViewProvider";
-import { ContinueGUIWebviewViewProvider } from "./ContinueGUIWebviewViewProvider";
-import { VerticalDiffManager } from "./diff/vertical/manager";
+import {ContinueConsoleWebviewViewProvider} from "./ContinueConsoleWebviewViewProvider";
+import {ContinueGUIWebviewViewProvider} from "./ContinueGUIWebviewViewProvider";
+import {VerticalDiffManager} from "./diff/vertical/manager";
 import EditDecorationManager from "./quickEdit/EditDecorationManager";
-import { QuickEdit, QuickEditShowParams } from "./quickEdit/QuickEditQuickPick";
-import { Battery } from "./util/battery";
-import { getMetaKeyLabel } from "./util/util";
-import { VsCodeIde } from "./VsCodeIde";
+import {QuickEdit, QuickEditShowParams} from "./quickEdit/QuickEditQuickPick";
+import {Battery} from "./util/battery";
+import {getMetaKeyLabel} from "./util/util";
+import {VsCodeIde} from "./VsCodeIde";
 
-import type { VsCodeWebviewProtocol } from "./webviewProtocol";
+import type {VsCodeWebviewProtocol} from "./webviewProtocol";
 
 let fullScreenPanel: vscode.WebviewPanel | undefined;
 
@@ -987,7 +987,7 @@ const getCommandsMap: (
     },
     "continue.runAutocompleteBenchmark": async () => {
   const { runAutocompleteTest } =
-    await import("../../vscode/src/test/benchmark/testAutocomplete");
+    await import("./test/benchmark/runAutocompleteTest");
   await runAutocompleteTest(configHandler, ide, sidebar.webviewProtocol);
 },
     "continue.navigateTo": (path: string, toggle: boolean) => {

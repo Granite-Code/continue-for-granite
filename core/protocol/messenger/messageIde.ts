@@ -97,6 +97,18 @@ export class MessageIde implements IDE {
     return this.request("getIdeInfo", undefined);
   }
 
+  private maskedRanges: { fileUri: string; range: Range }[] = [];
+
+  public addMaskedRange(fileUri: string, range: Range): void {
+    this.maskedRanges.push({ fileUri, range });
+  }
+
+  public removeMaskedRange(fileUri: string): void {
+    this.maskedRanges = this.maskedRanges.filter(
+      (m) => m.fileUri !== fileUri
+    );
+  }
+
   readRangeInFile(filepath: string, range: Range): Promise<string> {
     return this.request("readRangeInFile", { filepath, range });
   }

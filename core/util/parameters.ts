@@ -1,4 +1,4 @@
-import { TabAutocompleteOptions } from "../index.js";
+import {TabAutocompleteOptions} from "../index.js";
 
 export const DEFAULT_AUTOCOMPLETE_OPTS: TabAutocompleteOptions = {
   disable: false,
@@ -17,7 +17,7 @@ export const DEFAULT_AUTOCOMPLETE_OPTS: TabAutocompleteOptions = {
   disableInFiles: undefined,
   useImports: true,
   transform: true,
-  showWhateverWeHaveAtXMs: 300,
+  showWhateverWeHaveAtXMs: 100000,
   experimental_includeClipboard: true,
   experimental_includeRecentlyVisitedRanges: true,
   experimental_includeRecentlyEditedRanges: true,
