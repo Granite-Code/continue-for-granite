@@ -1,5 +1,4 @@
 import { Anthropic } from "./providers/anthropic.js";
-import { Azure } from "./providers/azure.js";
 import { Bedrock } from "./providers/bedrock.js";
 import { Cohere } from "./providers/cohere.js";
 import { Gemini } from "./providers/gemini.js";
@@ -17,7 +16,6 @@ export const allModelProviders: ModelProvider[] = [
   Anthropic,
   Mistral,
   Voyage,
-  Azure,
   Ollama,
   Vllm,
   Bedrock,

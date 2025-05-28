@@ -597,11 +597,6 @@ export interface LLMOptions {
   // Cloudflare options
   accountId?: string;
 
-  // Azure options
-  deployment?: string;
-  apiVersion?: string;
-  apiType?: string;
-
   // AWS options
   profile?: string;
   modelArn?: string;
@@ -614,6 +609,7 @@ export interface LLMOptions {
 
   // IBM watsonx Options
   deploymentId?: string;
+  apiVersion?: string;
 
   env?: Record<string, string | number | boolean>;
 }
@@ -1064,8 +1060,6 @@ export interface JSONEmbedOptions {
   apiBase?: string;
   apiKey?: string;
   model?: string;
-  deployment?: string;
-  apiType?: string;
   apiVersion?: string;
   requestOptions?: RequestOptions;
   maxEmbeddingChunkSize?: number;
@@ -1321,9 +1315,7 @@ export interface JSONModelDescription {
   region?: string;
   profile?: string;
   modelArn?: string;
-  apiType?: "openai" | "azure";
   apiVersion?: string;
-  deployment?: string;
   projectId?: string;
   accountId?: string;
   aiGatewaySlug?: string;

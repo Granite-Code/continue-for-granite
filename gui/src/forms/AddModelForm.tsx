@@ -49,7 +49,6 @@ function AddModelForm({
     providers["anthropic"]?.title || "",
     providers["mistral"]?.title || "",
     providers["gemini"]?.title || "",
-    providers["azure"]?.title || "",
     providers["ollama"]?.title || "",
   ];
 

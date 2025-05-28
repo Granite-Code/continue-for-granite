@@ -32,9 +32,7 @@ Each model has specific configuration options tailored to its provider and funct
 - `completionOptions`: Model-specific completion options, same format as top-level [`completionOptions`](#completionoptions), which they override.
 - `systemMessage`: A system message that will precede responses from the LLM.
 - `requestOptions`: Model-specific HTTP request options, same format as top-level [`requestOptions`](#requestoptions), which they override.
-- `apiType`: Specifies the type of API (`openai` or `azure`).
-- `apiVersion`: Azure API version (e.g., `2023-07-01-preview`).
-- `engine`: Engine for Azure OpenAI requests.
+- `apiVersion`: WatsonX API version (e.g., `2024-03-14`).
 - `capabilities`: Override auto-detected capabilities:
   - `uploadImage`: Boolean indicating if the model supports image uploads.
   - `tools`: Boolean indicating if the model supports tool use.

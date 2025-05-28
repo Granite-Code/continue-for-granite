@@ -121,8 +121,7 @@ class OpenAI extends BaseLLM {
     } else if (
       url.port === "1337" ||
       url.host === "api.openai.com" ||
-      url.host === "api.groq.com" ||
-      this.apiType === "azure"
+      url.host === "api.groq.com"
     ) {
       return 4;
     } else {
@@ -175,7 +174,7 @@ class OpenAI extends BaseLLM {
     return {
       "Content-Type": "application/json",
       Authorization: `Bearer ${this.apiKey}`,
-      "api-key": this.apiKey ?? "", // For Azure
+      "api-key": this.apiKey ?? "",
     };
   }
 
@@ -203,19 +202,6 @@ class OpenAI extends BaseLLM {
       throw new Error(
         "No API base URL provided. Please set the 'apiBase' option in config.json",
       );
-    }
-
-    if (this.apiType?.includes("azure")) {
-      // Default is `azure-openai`, but previously was `azure`
-      const isAzureOpenAI =
-        this.apiType === "azure-openai" || this.apiType === "azure";
-
-      const path = isAzureOpenAI
-        ? `openai/deployments/${this.deployment}/${endpoint}`
-        : endpoint;
-
-      const version = this.apiVersion ? `?api-version=${this.apiVersion}` : "";
-      return new URL(`${path}${version}`, this.apiBase);
     }
 
     return new URL(endpoint, this.apiBase);
@@ -417,12 +403,6 @@ class OpenAI extends BaseLLM {
       );
     }
 
-    if (this.apiType === "azure") {
-      return new URL(
-        `openai/deployments/${this.deployment}/embeddings?api-version=${this.apiVersion}`,
-        this.apiBase,
-      );
-    }
     return new URL("embeddings", this.apiBase);
   }
 
@@ -437,7 +417,7 @@ class OpenAI extends BaseLLM {
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
         "Content-Type": "application/json",
-        "api-key": this.apiKey ?? "", // For Azure
+        "api-key": this.apiKey ?? "",
       },
     });
 

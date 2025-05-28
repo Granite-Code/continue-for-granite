@@ -19,6 +19,6 @@ These blocks form the foundation of the entire assistant experience, offering di
 
 ## Learn More
 
-Continue supports [many model providers](../customize/model-providers), including Anthropic, OpenAI, Gemini, Ollama, Amazon Bedrock, Azure, xAI, DeepSeek, and more. Models can have various roles like `chat`, `edit`, `apply`, `autocomplete`, `embed`, and `rerank`.
+Continue supports [many model providers](../customize/model-providers), including Anthropic, OpenAI, Gemini, Ollama, Amazon Bedrock, xAI, DeepSeek, and more. Models can have various roles like `chat`, `edit`, `apply`, `autocomplete`, `embed`, and `rerank`.
 
 Read more about roles [here](../customize/model-roles/intro.mdx) and view [`models`](../reference.md#models) in the YAML Reference.

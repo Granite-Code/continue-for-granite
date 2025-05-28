@@ -76,7 +76,6 @@ const PROVIDER_SUPPORTS_IMAGES: string[] = [
   "venice",
   "sambanova",
   "vertexai",
-  "azure",
   "scaleway",
   "nebius",
   "ovhcloud",

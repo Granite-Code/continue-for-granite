@@ -55,7 +55,6 @@ export const modelDescriptionSchema = z.object({
     "bedrock",
     "sagemaker",
     "cloudflare",
-    "azure",
     "ovhcloud",
     "continue-proxy",
     "nebius",
@@ -120,8 +119,6 @@ export const embeddingsProviderSchema = z.object({
   apiBase: z.string().optional(),
   apiKey: z.string().optional(),
   model: z.string().optional(),
-  deployment: z.string().optional(),
-  apiType: z.string().optional(),
   apiVersion: z.string().optional(),
   requestOptions: requestOptionsSchema.optional(),
 });

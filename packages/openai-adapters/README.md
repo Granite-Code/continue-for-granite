@@ -27,7 +27,6 @@ They are concerned with:
 
 - [x] Anthropic
 - [ ] AskSage
-- [x] Azure
 - [ ] Bedrock
 - [ ] Bedrock Import
 - [x] Cerebras

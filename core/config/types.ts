@@ -96,9 +96,7 @@ declare global {
     apiBase?: string;
     cacheBehavior?: CacheBehavior;
   
-    deployment?: string;
     apiVersion?: string;
-    apiType?: string;
     region?: string;
     projectId?: string;
   
@@ -546,11 +544,6 @@ declare global {
     // Cloudflare options
     accountId?: string;
   
-    // Azure options
-    deployment?: string;
-    apiVersion?: string;
-    apiType?: string;
-  
     // AWS options
     profile?: string;
     modelArn?: string;
@@ -566,6 +559,7 @@ declare global {
   
     // IBM watsonx Options
     deploymentId?: string;
+    apiVersion?: string;
   }
   
   type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
@@ -961,8 +955,6 @@ declare global {
     apiBase?: string;
     apiKey?: string;
     model?: string;
-    deployment?: string;
-    apiType?: string;
     apiVersion?: string;
     requestOptions?: RequestOptions;
     maxChunkSize?: number;

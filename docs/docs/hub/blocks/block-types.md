@@ -11,7 +11,7 @@ sidebar_label: Types
 
 Models are blocks that let you specify Large Language Models (LLMs) and other deep learning models to be used for various roles in the open-source IDE extension like Chat, Autocomplete, Edit, Embed, Rerank, etc. You can explore available models on [the hub](https://hub.continue.dev/explore/models).
 
-Continue supports [many model providers](../../customize/model-providers), including Anthropic, OpenAI, Gemini, Ollama, Amazon Bedrock, Azure, xAI, DeepSeek, and more. Models can have one or more of the following roles depending on its capabilities, including `chat`, `edit`, `apply`, `autocomplete`, `embed`, and `rerank`. Read more about roles [here](../../customize/model-roles). View [`models`](../../reference.md#models) in the YAML Reference for more details.
+Continue supports [many model providers](../../customize/model-providers), including Anthropic, OpenAI, Gemini, Ollama, Amazon Bedrock, xAI, DeepSeek, and more. Models can have one or more of the following roles depending on its capabilities, including `chat`, `edit`, `apply`, `autocomplete`, `embed`, and `rerank`. Read more about roles [here](../../customize/model-roles). View [`models`](../../reference.md#models) in the YAML Reference for more details.
 
 ## Context
 

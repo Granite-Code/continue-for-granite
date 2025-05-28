@@ -12,7 +12,6 @@ import { BaseLLM } from "../index";
 
 import Anthropic from "./Anthropic";
 import Asksage from "./Asksage";
-import Azure from "./Azure";
 import Bedrock from "./Bedrock";
 import BedrockImport from "./BedrockImport";
 import Cerebras from "./Cerebras";
@@ -99,7 +98,6 @@ export const LLMClasses = [
   Deepseek,
   Docker,
   Msty,
-  Azure,
   WatsonX,
   OpenRouter,
   Nvidia,

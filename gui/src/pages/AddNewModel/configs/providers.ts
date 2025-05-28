@@ -225,54 +225,6 @@ export const providers: Partial<Record<string, ProviderInfo>> = {
     ],
     apiKeyUrl: "https://console.scaleway.com/iam/api-keys",
   },
-  azure: {
-    title: "Azure OpenAI",
-    provider: "azure",
-    description:
-      "Azure OpenAI Service offers industry-leading coding and language AI models that you can fine-tune to your specific needs for a variety of use cases.",
-    longDescription: `[Visit our documentation](https://docs.continue.dev/reference/Model%20Providers/azure) for information on obtaining an API key.
-
-Select the \`GPT-4o\` model below to complete your provider configuration, but note that this will not affect the specific model you need to select when creating your Azure deployment.`,
-    icon: "azure.png",
-    tags: [ModelProviderTags.RequiresApiKey],
-    refPage: "azure",
-    apiKeyUrl:
-      "https://azure.microsoft.com/en-us/products/ai-services/openai-service",
-    packages: [models.gpt4o],
-    params: {
-      apiKey: "",
-      deployment: "",
-      apiBase: "",
-      apiVersion: "",
-      apiType: "azure",
-    },
-    collectInputFor: [
-      {
-        inputType: "text",
-        key: "apiKey",
-        label: "API Key",
-        placeholder: "Enter your Azure OpenAI API key",
-        required: true,
-      },
-      {
-        inputType: "text",
-        key: "deployment",
-        label: "Deployment",
-        placeholder: "Enter the deployment name",
-        required: true,
-      },
-      { ...apiBaseInput, required: true },
-      {
-        inputType: "text",
-        key: "apiVersion",
-        label: "API Version",
-        placeholder: "Enter the API version",
-        required: false,
-        defaultValue: "2023-07-01-preview",
-      },
-      ...completionParamsInputsConfigs,
-    ],
-  },
   mistral: {
     title: "Mistral",
     provider: "mistral",

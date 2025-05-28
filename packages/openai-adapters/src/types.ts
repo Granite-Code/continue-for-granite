@@ -82,11 +82,6 @@ export const CohereConfigSchema = OpenAIConfigSchema.extend({
 });
 export type CohereConfig = z.infer<typeof CohereConfigSchema>;
 
-export const AzureConfigSchema = OpenAIConfigSchema.extend({
-  provider: z.literal("azure"),
-});
-export type AzureConfig = z.infer<typeof AzureConfigSchema>;
-
 export const GeminiConfigSchema = OpenAIConfigSchema.extend({
   provider: z.literal("gemini"),
   apiKey: z.string(),
@@ -115,7 +110,6 @@ export const LLMConfigSchema = z.discriminatedUnion("provider", [
   MoonshotConfigSchema,
   DeepseekConfigSchema,
   CohereConfigSchema,
-  AzureConfigSchema,
   GeminiConfigSchema,
   AnthropicConfigSchema,
   JinaConfigSchema,

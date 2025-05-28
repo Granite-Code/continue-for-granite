@@ -49,9 +49,7 @@ describe("BaseLLM", () => {
         aiGatewaySlug: "testSlug",
         apiBase: "https://api.example.com",
         accountId: "testAccountId",
-        deployment: "davinci",
         apiVersion: "v1",
-        apiType: "public",
         region: "us",
         projectId: "testProjectId",
       };
@@ -71,9 +69,7 @@ describe("BaseLLM", () => {
       expect(instance.aiGatewaySlug).toBe("testSlug");
       expect(instance.apiBase).toBe("https://api.example.com/");
       expect(instance.accountId).toBe("testAccountId");
-      expect(instance.deployment).toBe("davinci");
       expect(instance.apiVersion).toBe("v1");
-      expect(instance.apiType).toBe("public");
       expect(instance.region).toBe("us");
       expect(instance.projectId).toBe("testProjectId");
     });

@@ -104,14 +104,8 @@ async function modelConfigToBaseLLM({
   ) {
     options.useLegacyCompletionsEndpoint = env.useLegacyCompletionsEndpoint;
   }
-  if ("apiType" in env && typeof env.apiType === "string") {
-    options.apiType = env.apiType;
-  }
   if ("apiVersion" in env && typeof env.apiVersion === "string") {
     options.apiVersion = env.apiVersion;
-  }
-  if ("deployment" in env && typeof env.deployment === "string") {
-    options.deployment = env.deployment;
   }
   if ("deploymentId" in env && typeof env.deploymentId === "string") {
     options.deploymentId = env.deploymentId;

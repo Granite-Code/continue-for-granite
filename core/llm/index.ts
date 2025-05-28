@@ -102,7 +102,7 @@ export abstract class BaseLLM implements ILLM {
   }
 
   supportsCompletions(): boolean {
-    if (["openai", "azure"].includes(this.providerName)) {
+    if (["openai"].includes(this.providerName)) {
       if (
         this.apiBase?.includes("api.groq.com") ||
         this.apiBase?.includes("api.mistral.ai") ||
@@ -153,9 +153,6 @@ export abstract class BaseLLM implements ILLM {
   capabilities?: ModelCapability;
   roles?: ModelRole[];
 
-  deployment?: string;
-  apiVersion?: string;
-  apiType?: string;
   region?: string;
   projectId?: string;
   accountId?: string;
@@ -164,6 +161,7 @@ export abstract class BaseLLM implements ILLM {
 
   // For IBM watsonx
   deploymentId?: string;
+  apiVersion?: string;
 
   // Embedding options
   embeddingId: string;
@@ -253,9 +251,7 @@ export abstract class BaseLLM implements ILLM {
     this.capabilities = options.capabilities;
     this.roles = options.roles;
 
-    this.deployment = options.deployment;
     this.apiVersion = options.apiVersion;
-    this.apiType = options.apiType;
     this.region = options.region;
     this.projectId = options.projectId;
     this.profile = options.profile;
