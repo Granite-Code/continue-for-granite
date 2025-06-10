@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
-   sodipodi:docname="step_3.svg"
+   sodipodi:docname="step_4.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -32,7 +32,7 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g95" />
+     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <inkscape:path-effect
@@ -276,42 +276,6 @@
        linejoin_type="extrp_arc"
        miter_limit="100"
        attempt_force_join="true" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       inkscape:label="Card Shadow"
-       id="filter367466-28-7"
-       x="-0.033942752"
-       y="-0.033942752"
-       width="1.0678855"
-       height="1.1308776">
-      <feFlood
-         flood-opacity="0.0784314"
-         flood-color="rgb(0,0,0)"
-         result="flood"
-         id="feFlood367456-8-0" />
-      <feComposite
-         in="flood"
-         in2="SourceGraphic"
-         operator="in"
-         result="composite1"
-         id="feComposite367458-9-9" />
-      <feGaussianBlur
-         in="composite1"
-         stdDeviation="0.44903423"
-         result="blur"
-         id="feGaussianBlur367460-2-3" />
-      <feOffset
-         dx="0"
-         dy="2"
-         result="offset"
-         id="feOffset367462-8-6" />
-      <feComposite
-         in="SourceGraphic"
-         in2="offset"
-         operator="over"
-         result="composite2"
-         id="feComposite367464-8-0" />
-    </filter>
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -324,8 +288,8 @@
       <path
          id="rect105"
          style="font-variation-settings:'opsz' 32;fill:none;stroke:#0078d4;stroke-width:0.556251;stroke-dasharray:0.556251, 0.556251;paint-order:stroke markers fill"
-         d="m 1413.1407,1372.6153 c -7.9419,0 -14.3356,-6.3937 -14.3356,-14.3357 v -24.2636 c 0,-7.942 6.3937,-14.3357 14.3356,-14.3357 h 24.31"
-         sodipodi:nodetypes="csssc" />
+         d="m 1413.1407,1372.6153 c -7.9419,0 -14.3356,-6.3937 -14.3356,-14.3357 v -24.2636 c 0,-7.942 6.3937,-14.3357 14.3356,-14.3357 h 24.31 c 7.942,0 14.3357,6.3937 14.3357,14.3357 v 24.2636 c 0,7.942 -6.3937,14.3357 -14.3357,14.3357"
+         sodipodi:nodetypes="cssssssc" />
       <g
          id="g106"
          style="stroke-width:0.700789">
@@ -363,7 +327,7 @@
          inkscape:radius="2.9373558"
          inkscape:original="M 1391.8613 214.875 C 1388.9297 214.875 1386.5703 217.23444 1386.5703 220.16602 L 1386.5703 241.33203 C 1386.5703 244.26361 1388.9297 246.625 1391.8613 246.625 L 1413.0273 246.625 C 1415.9589 246.625 1418.3203 244.26361 1418.3203 241.33203 L 1418.3203 220.16602 C 1418.3203 217.23444 1415.9589 214.875 1413.0273 214.875 L 1391.8613 214.875 z "
          d="m 1391.8613,211.9375 c -4.5076,0 -8.2285,3.7209 -8.2285,8.22852 v 21.16601 c 0,4.50761 3.7196,8.23047 8.2285,8.23047 h 21.166 c 4.509,0 8.2305,-3.72152 8.2305,-8.23047 v -21.16601 c 0,-4.50895 -3.7228,-8.22852 -8.2305,-8.22852 z"
-         transform="translate(49.417205,1088.2105)" />
+         transform="translate(49.417205,1140.8683)" />
       <g
          id="g90"
          transform="translate(11.689982,1148.0331)"
@@ -412,7 +376,7 @@
          transform="translate(-3.78787,1148.0331)"
          style="stroke-width:0.700789">
         <rect
-           style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:#3d3846;fill-opacity:1;stroke-width:0.370834;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;paint-order:stroke markers fill;stop-color:#000000;stop-opacity:1;filter:url(#filter367466-28)"
+           style="font-variation-settings:'opsz' 32;opacity:1;vector-effect:none;fill:url(#linearGradient105);fill-opacity:1;stroke-width:0.370834;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.370834, 1.1125;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;paint-order:stroke markers fill;stop-color:#000000;stop-opacity:1"
            id="rect90"
            width="31.749994"
            height="31.749994"
@@ -423,7 +387,7 @@
            id="g91"
            inkscape:label="chip configure ok ai llm"
            transform="matrix(0.39687501,0,0,0.39687501,1411.2003,-64.752278)"
-           style="display:inline;opacity:0.2;fill:#ffffff;stroke-width:0.700789">
+           style="display:inline;opacity:1;fill:#ffffff;stroke-width:0.700789">
           <title
              id="title90">chip-ok</title>
           <path
@@ -439,7 +403,7 @@
          transform="translate(30.608004,1140.4893)"
          style="stroke-width:0.700789">
         <rect
-           style="font-variation-settings:'opsz' 32;opacity:1;vector-effect:none;fill:url(#linearGradient105);fill-opacity:1;stroke-width:0.370834;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.370834,1.1125;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;paint-order:stroke markers fill;filter:url(#filter367466-28);stop-color:#000000;stop-opacity:1"
+           style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:#3d3846;fill-opacity:1;stroke-width:0.370834;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;paint-order:stroke markers fill;filter:url(#filter367466-28);stop-color:#000000;stop-opacity:1"
            id="rect93"
            width="31.749994"
            height="31.749994"
@@ -449,7 +413,7 @@
         <g
            id="g94"
            transform="matrix(0.87604525,0,0,0.87604525,1156.8909,18.605848)"
-           style="opacity:1;fill:#ffffff;stroke-width:0.700789">
+           style="opacity:0.2;fill:#ffffff;stroke-width:0.700789">
           <g
              id="g93"
              transform="matrix(0.15557603,0,0,0.15557603,229.05244,166.17428)"
