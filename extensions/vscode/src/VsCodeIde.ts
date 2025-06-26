@@ -653,6 +653,17 @@ class VsCodeIde implements IDE {
   isGraniteOnboardingComplete(): boolean {
     return isGraniteOnboardingComplete(this.context);
   }
+
+  getAppName(): string {
+    return vscode.env.appName
+      .split(" ")
+      .map((e) => e.toLowerCase())
+      .join("-");
+  }
+
+  getExtensionVersion(): string {
+    return this.context.extension.packageJSON["version"];
+  }
 }
 
 export { VsCodeIde };

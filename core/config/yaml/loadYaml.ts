@@ -302,7 +302,8 @@ async function configYamlToContinueConfig(options: {
   // Models
   let warnAboutFreeTrial = false;
   const defaultModelRoles: ModelRole[] = ["chat", "summarize", "apply", "edit"];
-  const models = getAllModels(config, graniteConfigYaml);
+  // We don't have to inject the models here, if we have this new feature
+  const models = nonNull(config.models ?? []);
 
   for (const model of models) {
     model.roles = model.roles ?? defaultModelRoles; // Default to all 4 chat-esque roles if not specified
@@ -461,6 +462,7 @@ function nonNull<T>(l: T[]) {
   return l.filter((t) => t !== null);
 }
 
+// This function can be removed then
 function getAllModels(
   config: AssistantUnrolled,
   graniteConfigYaml: Required<Pick<AssistantUnrolled, "models">>,

@@ -817,6 +817,10 @@ export interface IDE {
 
   // Callbacks
   onDidChangeActiveTextEditor(callback: (fileUri: string) => void): void;
+
+  getAppName?(): string;
+
+  getExtensionVersion?(): string;
 }
 
 // Slash Commands

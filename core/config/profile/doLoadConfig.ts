@@ -24,6 +24,7 @@ import { ControlPlaneProxyInfo } from "../../control-plane/analytics/IAnalyticsP
 import { ControlPlaneClient } from "../../control-plane/client.js";
 import { getControlPlaneEnv } from "../../control-plane/env.js";
 import { TeamAnalytics } from "../../control-plane/TeamAnalytics.js";
+import { overrideDefaultModelBlocks } from "../../granite/config/defaultModelBlocks";
 import ContinueProxy from "../../llm/llms/stubs/ContinueProxy";
 import { getConfigDependentToolDefinitions } from "../../tools";
 import { encodeMCPToolUri } from "../../tools/callTool";
@@ -68,6 +69,16 @@ export default async function doLoadConfig(options: {
   const uniqueId = await ide.getUniqueId();
   const ideSettings = await ideSettingsPromise;
   const workOsAccessToken = await controlPlaneClient.getAccessToken();
+
+  const appName = ide.getAppName ? ide.getAppName() : "undefined";
+  const extensionVersion = ide.getExtensionVersion
+    ? ide.getExtensionVersion()
+    : "undefined";
+  overrideDefaultModelBlocks(
+    appName,
+    extensionVersion,
+    ideSettings.localModelSize,
+  );
 
   // Migrations for old config files
   // Removes
