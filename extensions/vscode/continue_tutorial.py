@@ -50,4 +50,4 @@ def sorting_algorithm2(x):
 # 2. Try asking Continue "Write unit tests for this code in a new file",
 #    or if you have Python installed, "Write unit tests for this code in a new file and run the test"
 
-# ——————————————————      Learn more at https://docs.continue.dev/getting-started/overview      ——————————————————— #
+# ——————————————————      Learn more at https://docs.granitecode.ai/getting-started      ——————————————————— #

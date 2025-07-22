@@ -20,10 +20,9 @@ interface AddModelFormProps {
   hideFreeTrialLimitMessage?: boolean;
 }
 
-const MODEL_PROVIDERS_URL =
-  "https://docs.continue.dev/customize/model-providers";
+const MODEL_PROVIDERS_URL = "";
 const CODESTRAL_URL = "https://console.mistral.ai/codestral";
-const CONTINUE_SETUP_URL = "https://docs.continue.dev/setup/overview";
+const CONTINUE_SETUP_URL = "";
 
 export function AddModelForm({
   onDone,

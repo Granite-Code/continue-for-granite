@@ -52,15 +52,7 @@ export class ContinueCompletionProvider
     if (e instanceof Error) {
       message += `: ${e.message}`;
     }
-    vscode.window.showErrorMessage(message, "Documentation").then((val) => {
-      if (val === "Documentation") {
-        vscode.env.openExternal(
-          vscode.Uri.parse(
-            "https://docs.continue.dev/features/tab-autocomplete",
-          ),
-        );
-      }
-    });
+    vscode.window.showErrorMessage(message);
   }
 
   private completionProvider: CompletionProvider;
