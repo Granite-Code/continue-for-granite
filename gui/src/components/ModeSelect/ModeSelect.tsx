@@ -117,35 +117,37 @@ export function ModeSelect() {
             </div>
             {mode === "chat" && <CheckIcon className="ml-auto h-3 w-3" />}
           </ListboxOption>
-          <ListboxOption
-            value="plan"
-            disabled={!agentModeSupported}
-            className={"gap-1"}
-          >
-            <div className="flex flex-row items-center gap-1.5">
-              <ModeIcon mode="plan" />
-              <span className="">Plan</span>
-              <InformationCircleIcon
-                data-tooltip-id="plan-tip"
-                className="h-2.5 w-2.5 flex-shrink-0"
-              />
-              <ToolTip
-                id="plan-tip"
-                style={{
-                  zIndex: 200001,
-                }}
-              >
-                Read-only/MCP tools available
-              </ToolTip>
-            </div>
-            {agentModeSupported ? (
-              <CheckIcon
-                className={`ml-auto h-3 w-3 ${mode === "plan" ? "" : "opacity-0"}`}
-              />
-            ) : (
-              <span>(Not supported)</span>
-            )}
+          {agentModeSupported && (
+            <ListboxOption
+              value="plan"
+              disabled={!agentModeSupported}
+              className={"gap-1"}
+            >
+              <div className="flex flex-row items-center gap-1.5">
+                <ModeIcon mode="plan" />
+                <span className="">Plan</span>
+                <InformationCircleIcon
+                  data-tooltip-id="plan-tip"
+                  className="h-2.5 w-2.5 flex-shrink-0"
+                />
+                <ToolTip
+                  id="plan-tip"
+                  style={{
+                    zIndex: 200001,
+                  }}
+                >
+                  Read-only/MCP tools available
+                </ToolTip>
+              </div>
+              {agentModeSupported ? (
+                <CheckIcon
+                  className={`ml-auto h-3 w-3 ${mode === "plan" ? "" : "opacity-0"}`}
+                />
+              ) : (
+                <span>(Not supported)</span>
+              )}
           </ListboxOption>
+          )}
           {agentModeSupported && (
             <ListboxOption
               value="agent"
