@@ -2,14 +2,16 @@ import * as path from "path";
 
 import * as vscode from "vscode";
 
+import { getVirtualConfigUri } from "./VirtualConfigUris";
+
 export class ConfigYamlDocumentLinkProvider
   implements vscode.DocumentLinkProvider
 {
   private usesPattern = /^\s*#?\s*-\s*uses:\s*(.+)$/;
-  provideDocumentLinks(
+  async provideDocumentLinks(
     document: vscode.TextDocument,
     token: vscode.CancellationToken,
-  ): vscode.ProviderResult<vscode.DocumentLink[]> {
+  ): Promise<vscode.DocumentLink[]> {
     const links: vscode.DocumentLink[] = [];
 
     for (let lineIndex = 0; lineIndex < document.lineCount; lineIndex++) {
@@ -56,6 +58,12 @@ export class ConfigYamlDocumentLinkProvider
           const parentPath = path.dirname(currentFilePath);
           const resolvedPath = path.resolve(parentPath, slug);
           linkUri = vscode.Uri.file(resolvedPath);
+        } else if (slug.startsWith("$")) {
+          let virtualUri = await getVirtualConfigUri(slug);
+          if (!virtualUri) {
+            continue;
+          }
+          linkUri = vscode.Uri.parse(virtualUri);
         } else {
           linkUri = vscode.Uri.parse(`https://hub.continue.dev/${slug}`);
         }

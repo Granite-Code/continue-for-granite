@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { commonModelSlugs } from "./commonSlugs.js";
+import { graniteCodeModelSlugs } from "./commonSlugs.js";
 import { dataSchema } from "./data/index.js";
 import {
   modelSchema,
@@ -114,7 +114,9 @@ export const baseConfigYamlSchema = z.object({
 
 const modelsUsesSchema = z
   .string()
-  .or(z.enum(commonModelSlugs as [string, ...string[]]));
+  // Continue's commonModelSlugs are actually unavailable,
+  // so replace them with graniteCodeModelSlugs
+  .or(z.enum(graniteCodeModelSlugs as [string, ...string[]]));
 
 export const configYamlSchema = baseConfigYamlSchema.extend({
   models: z

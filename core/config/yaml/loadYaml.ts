@@ -7,7 +7,6 @@ import {
   MCPServer,
   ModelRole,
   PackageIdentifier,
-  RegistryClient,
   Rule,
   TEMPLATE_VAR_REGEX,
   unrollAssistant,
@@ -37,7 +36,6 @@ import { modifyAnyConfigWithSharedConfig } from "../sharedConfig";
 
 import { convertPromptBlockToSlashCommand } from "../../commands/slash/promptBlockSlashCommand";
 import { slashCommandFromPromptFile } from "../../commands/slash/promptFileSlashCommand";
-import { getControlPlaneEnvSync } from "../../control-plane/env";
 import { getToolsForIde } from "../../tools";
 import { getCleanUriPath } from "../../util/uri";
 import {
@@ -45,6 +43,7 @@ import {
   defaultConfigGraniteSmall,
 } from "../default";
 import { getAllDotContinueDefinitionFiles } from "../loadLocalAssistants";
+import { GraniteCodeRegistryClient } from "./GraniteCodeRegistryClient";
 import { LocalPlatformClient } from "./LocalPlatformClient";
 import { llmsFromModelConfig } from "./models";
 
@@ -133,10 +132,8 @@ async function loadConfigYaml(options: {
     // This is how we allow use of blocks locally
     const unrollResult = await unrollAssistant(
       packageIdentifier,
-      new RegistryClient({
-        accessToken: await controlPlaneClient.getAccessToken(),
-        apiBase: getControlPlaneEnvSync(ideSettings.continueTestEnvironment)
-          .CONTROL_PLANE_URL,
+      new GraniteCodeRegistryClient({
+        ideInfo: await ide.getIdeInfo(),
         rootPath,
       }),
       {
@@ -477,7 +474,7 @@ function getAllModels(
     }
   }
 
-  return allModels;
+  return allModels.filter((model) => model.enabled !== false);
 }
 
 function getAllContextProviders(

@@ -28,3 +28,9 @@ export const commonModelSlugs = [
   "ollama/deepseek-r1-8b",
   "openai/text-embedding-3-large",
 ];
+
+export const graniteCodeModelSlugs = [
+  "$granite-code/models/chat",
+  "$granite-code/models/autocomplete",
+  "$granite-code/models/embeddings",
+];
