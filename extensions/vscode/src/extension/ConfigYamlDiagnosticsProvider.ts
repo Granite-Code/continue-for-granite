@@ -1,7 +1,7 @@
 import { isSupportedSlug } from "core/config/yaml/VirtualConfigYamlSupport";
 import * as vscode from "vscode";
 
-import { findSlug } from "./parseUsesSlug";
+import { findSlug } from "core/granite/utils/parseUsesSlug";
 
 export function registerConfigYamlDiagnosticsProvider(): vscode.Disposable {
   const diagnosticCollection = vscode.languages.createDiagnosticCollection(

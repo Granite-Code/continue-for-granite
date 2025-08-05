@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { parseUsesSlug } from "./parseUsesSlug";
+import { parseUsesSlug } from "core/granite/utils/parseUsesSlug";
 import { getVirtualConfigUri } from "./VirtualConfigUris";
 
 export function registerConfigYamlDefinitionProvider(): vscode.Disposable {
