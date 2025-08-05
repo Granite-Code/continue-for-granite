@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 
 import { getExtensionVersion } from "../util/util";
 
-import { parseUsesSlug } from "./parseUsesSlug";
+import { parseUsesSlug } from "core/granite/utils/parseUsesSlug";
 
 export function registerConfigYamlHoverProvider(): vscode.Disposable {
   return vscode.languages.registerHoverProvider(

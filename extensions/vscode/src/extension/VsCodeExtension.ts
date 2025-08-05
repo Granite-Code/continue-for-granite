@@ -47,6 +47,7 @@ import { registerConfigYamlHoverProvider } from "./ConfigYamlHoverProvider";
 import { registerVirtualConfigDocumentProvider } from "./VirtualConfigYamlDocumentProvider";
 import { VsCodeMessenger } from "./VsCodeMessenger";
 
+import { validateVirtualReferences } from "core/granite/config/virtualReference";
 import setupNextEditWindowManager, {
   NextEditWindowManager,
 } from "../activation/NextEditWindowManager";
@@ -423,6 +424,8 @@ export class VsCodeExtension {
         documentContentProvider,
       ),
     );
+
+    void validateVirtualReferences(this.ide);
 
     const linkProvider = vscode.languages.registerDocumentLinkProvider(
       { language: "yaml" },

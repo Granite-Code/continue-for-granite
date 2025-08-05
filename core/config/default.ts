@@ -2,6 +2,7 @@ import {
   AssistantUnrolled,
   ConfigYaml,
   ModelConfig,
+  graniteCodeModelSlugs,
 } from "@continuedev/config-yaml";
 
 export const defaultContextProvidersVsCode = [
@@ -24,7 +25,7 @@ export const defaultConfig: ConfigYaml = {
   name: "Local Assistant",
   version: "1.0.0",
   schema: "v1",
-  models: [],
+  models: graniteCodeModelSlugs.map((slug) => ({ uses: slug })),
   context: defaultContextProvidersVsCode,
 };
 

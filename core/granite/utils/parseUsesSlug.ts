@@ -30,6 +30,7 @@ export function findSlug(
     } else {
       // If not quoted, remove any trailing comment
       slug = slug.replace(/\s*#.*$/, "").trim();
+      slug = slug.match(/^[^\s,}]*/)![0];
     }
 
     if (!slug || !slug.startsWith("$")) {
