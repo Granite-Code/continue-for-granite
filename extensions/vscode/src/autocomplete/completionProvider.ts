@@ -142,23 +142,6 @@ export class ContinueCompletionProvider
 
     const selectedCompletionInfo = context.selectedCompletionInfo;
 
-    // This code checks if there is a selected completion suggestion in the given context and ensures that it is valid
-    // To improve the accuracy of suggestions it checks if the user has typed at least 4 characters
-    // This helps refine and filter out irrelevant autocomplete options
-    if (selectedCompletionInfo) {
-      const { text, range } = selectedCompletionInfo;
-      const typedText = document.getText(range);
-
-      const typedLength = range.end.character - range.start.character;
-
-      if (typedLength < 4) {
-        return null;
-      }
-
-      if (!text.startsWith(typedText)) {
-        return null;
-      }
-    }
     let injectDetails: string | undefined = undefined;
 
     try {
@@ -265,21 +248,105 @@ export class ContinueCompletionProvider
        *
        * Inline completion providers are requested again whenever the selected item changes.
        */
-      if (selectedCompletionInfo) {
-        outcome.completion = selectedCompletionInfo.text + outcome.completion;
+
+      if (
+        selectedCompletionInfo &&
+        selectedCompletionInfo.text.startsWith(".")
+      ) {
+        const trimmedCompletion = outcome.completion.trimStart();
+        if (trimmedCompletion.startsWith(".")) {
+          outcome.completion = trimmedCompletion;
+        }
       }
+
+      // Construct the range/text to show
+      let range = new vscode.Range(position, position);
+      let completionText = outcome.completion;
+      const mayChangeRange = selectedCompletionInfo === undefined;
+
+      // NOTE: This seems like an autocomplete logic.
+      const isSingleLineCompletion = outcome.completion.split("\n").length <= 1;
+
+      if (isSingleLineCompletion) {
+        const currentLineRemainder = document
+          .lineAt(position)
+          .text.substring(position.character);
+
+        const result = processSingleLineCompletion(
+          completionText,
+          currentLineRemainder,
+          position.character,
+          mayChangeRange,
+        );
+
+        if (result === undefined) {
+          return undefined;
+        }
+
+        completionText = result.completionText;
+        if (result.range) {
+          range = new vscode.Range(
+            new vscode.Position(position.line, result.range.start),
+            new vscode.Position(position.line, result.range.end),
+          );
+        }
+      } else {
+        if (mayChangeRange) {
+          // Extend the range to the end of the line for multiline completionsq
+          range = new vscode.Range(
+            position,
+            document.lineAt(position).range.end,
+          );
+        } else {
+          // Since we can't change the range, try to shorten the completion
+          // into a single-line insertion
+
+          const currentLineRemainder = document
+            .lineAt(position)
+            .text.substring(position.character);
+
+          if (currentLineRemainder !== "") {
+            const firstLineOfCompletion = outcome.completion.split("\n")[0];
+            const remainderLocation =
+              firstLineOfCompletion.lastIndexOf(currentLineRemainder);
+            if (remainderLocation !== -1) {
+              completionText = firstLineOfCompletion.slice(
+                0,
+                remainderLocation,
+              );
+            } else {
+              return null;
+            }
+          }
+        }
+      }
+
+      if (selectedCompletionInfo) {
+        if (range.start.isEqual(selectedCompletionInfo.range.end)) {
+          range = new vscode.Range(
+            selectedCompletionInfo.range.start,
+            range.end,
+          );
+          const existingText = document.getText(selectedCompletionInfo.range);
+          completionText = existingText + completionText;
+        }
+      }
+
+      // update the completion property
+      outcome.completion = completionText;
+
       const willDisplay = this.willDisplay(
         document,
         selectedCompletionInfo,
         signal,
+        range,
         outcome,
       );
+
       if (!willDisplay) {
         return null;
       }
 
-      // Marking the outcome as displayed saves
-      // the current outcome as a value of the key completionId.
       if (this.isNextEditActive) {
         this.nextEditProvider.markDisplayed(
           input.completionId,
@@ -292,46 +359,6 @@ export class ContinueCompletionProvider
         );
       }
       this._lastShownCompletion = outcome;
-
-      // Construct the range/text to show
-      const startPos = selectedCompletionInfo?.range.start ?? position;
-      // const startPos = new vscode.Position(0, 0);
-      // const endPos = new vscode.Position(0, 5);
-      let range = new vscode.Range(startPos, startPos);
-      // let range = new vscode.Range(startPos, endPos);
-      let completionText = outcome.completion;
-
-      // NOTE: This seems like an autocomplete logic.
-      const isSingleLineCompletion = outcome.completion.split("\n").length <= 1;
-
-      if (isSingleLineCompletion) {
-        const lastLineOfCompletionText = completionText.split("\n").pop() || "";
-        const currentText = document
-          .lineAt(startPos)
-          .text.substring(startPos.character);
-
-        const result = processSingleLineCompletion(
-          lastLineOfCompletionText,
-          currentText,
-          startPos.character,
-          true,
-        );
-
-        if (result === undefined) {
-          return undefined;
-        }
-
-        completionText = result.completionText;
-        if (result.range) {
-          range = new vscode.Range(
-            new vscode.Position(startPos.line, result.range.start),
-            new vscode.Position(startPos.line, result.range.end),
-          );
-        }
-      } else {
-        // Extend the range to the end of the line for multiline completions
-        range = new vscode.Range(startPos, document.lineAt(startPos).range.end);
-      }
 
       const autocompleteCompletionItem = new vscode.InlineCompletionItem(
         completionText,
@@ -439,15 +466,15 @@ export class ContinueCompletionProvider
     document: vscode.TextDocument,
     selectedCompletionInfo: vscode.SelectedCompletionInfo | undefined,
     abortSignal: AbortSignal,
+    range: vscode.Range,
     outcome: AutocompleteOutcome | NextEditOutcome,
   ): boolean {
     if (selectedCompletionInfo) {
-      const { text, range } = selectedCompletionInfo;
-      if (!outcome.completion.startsWith(text)) {
-        console.log(
-          `Won't display completion because text doesn't match: ${text}, ${outcome.completion}`,
-          range,
-        );
+      if (!range.isEqual(selectedCompletionInfo.range)) {
+        return false;
+      }
+
+      if (!outcome.completion.startsWith(selectedCompletionInfo.text)) {
         return false;
       }
     }
