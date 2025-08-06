@@ -1,4 +1,4 @@
-import { DEFAULT_MODEL_GRANITE_LARGE } from "../../config/default";
+import { DEFAULT_GRANITE_CHAT_MODEL } from "../../config/default";
 import { MODEL_REQUIREMENTS } from "./modelRequirements";
 import { GB } from "./sizeUtils";
 import { SYSTEM_REQUIREMENTS } from "./systemRequirements";
@@ -75,7 +75,7 @@ export function getRecommendedModels(systemInfo: SystemInfo) {
 
 export function shouldRecommendLargeModel(systemInfo: SystemInfo): boolean {
   const modelRequirements =
-    MODEL_REQUIREMENTS[DEFAULT_MODEL_GRANITE_LARGE.model];
+    MODEL_REQUIREMENTS[DEFAULT_GRANITE_CHAT_MODEL.model];
   if (!modelRequirements) return false;
 
   if (isHighEndApple(systemInfo.gpus)) {

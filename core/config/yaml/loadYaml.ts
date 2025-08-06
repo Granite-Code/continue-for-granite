@@ -38,10 +38,7 @@ import { convertPromptBlockToSlashCommand } from "../../commands/slash/promptBlo
 import { slashCommandFromPromptFile } from "../../commands/slash/promptFileSlashCommand";
 import { getToolsForIde } from "../../tools";
 import { getCleanUriPath } from "../../util/uri";
-import {
-  defaultConfigGraniteLarge,
-  defaultConfigGraniteSmall,
-} from "../default";
+import { defaultConfigGranite } from "../default";
 import { getAllDotContinueDefinitionFiles } from "../loadLocalAssistants";
 import { GraniteCodeRegistryClient } from "./GraniteCodeRegistryClient";
 import { LocalPlatformClient } from "./LocalPlatformClient";
@@ -262,10 +259,7 @@ async function configYamlToContinueConfig(options: {
     ),
   };
 
-  const graniteConfigYaml =
-    ideSettings.localModelSize === "large"
-      ? defaultConfigGraniteLarge
-      : defaultConfigGraniteSmall;
+  const graniteConfigYaml = defaultConfigGranite;
 
   // Prompt files -
   try {

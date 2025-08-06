@@ -1,9 +1,9 @@
 import { graniteCodeModelSlugs } from "@continuedev/config-yaml";
 import * as YAML from "yaml";
 import {
+  DEFAULT_GRANITE_CHAT_MODEL,
   DEFAULT_GRANITE_COMPLETION_MODEL,
   DEFAULT_GRANITE_EMBEDDING_MODEL,
-  DEFAULT_MODEL_GRANITE_LARGE,
 } from "../default";
 
 export function isSupportedSlug(slug: string): boolean {
@@ -18,7 +18,7 @@ export function getVirtualConfigYamlContent(
     case "$granite-code/models/chat":
       return getVirtualConfig(
         getTitle("Chat"),
-        DEFAULT_MODEL_GRANITE_LARGE,
+        DEFAULT_GRANITE_CHAT_MODEL,
         extensionVersion,
       );
     case "$granite-code/models/autocomplete":
