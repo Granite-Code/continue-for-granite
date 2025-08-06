@@ -47,14 +47,7 @@ const BASE_GRANITE_CONFIG: Partial<ModelConfig> = {
   roles: ["apply", "chat", "edit", "summarize"],
 };
 
-export const DEFAULT_MODEL_GRANITE_SMALL: ModelConfig = {
-  name: "granite3.3:2b",
-  provider: "ollama",
-  model: "granite3.3:2b",
-  ...BASE_GRANITE_CONFIG,
-};
-
-export const DEFAULT_MODEL_GRANITE_LARGE: ModelConfig = {
+export const DEFAULT_GRANITE_CHAT_MODEL: ModelConfig = {
   name: "granite3.3:8b",
   provider: "ollama",
   model: "granite3.3:8b",
@@ -85,34 +78,17 @@ export const DEFAULT_GRANITE_EMBEDDING_MODEL: ModelConfig = {
   roles: ["embed"],
 };
 
-export const DEFAULT_GRANITE_MODEL_IDS_LARGE = [
-  DEFAULT_MODEL_GRANITE_LARGE.model,
+export const DEFAULT_GRANITE_MODEL_IDS = [
+  DEFAULT_GRANITE_CHAT_MODEL.model,
   DEFAULT_GRANITE_COMPLETION_MODEL.model,
   DEFAULT_GRANITE_EMBEDDING_MODEL.model,
 ];
 
-export const DEFAULT_GRANITE_MODEL_IDS_SMALL = [
-  DEFAULT_MODEL_GRANITE_SMALL.model,
-  DEFAULT_GRANITE_COMPLETION_MODEL.model,
-  DEFAULT_GRANITE_EMBEDDING_MODEL.model,
-];
-
-export const defaultConfigGraniteLarge: Required<
+export const defaultConfigGranite: Required<
   Pick<AssistantUnrolled, "models" | "context">
 > = {
   models: [
-    DEFAULT_MODEL_GRANITE_LARGE,
-    DEFAULT_GRANITE_COMPLETION_MODEL,
-    DEFAULT_GRANITE_EMBEDDING_MODEL,
-  ],
-  context: defaultContextProvidersVsCode,
-};
-
-export const defaultConfigGraniteSmall: Required<
-  Pick<AssistantUnrolled, "models" | "context">
-> = {
-  models: [
-    DEFAULT_MODEL_GRANITE_SMALL,
+    DEFAULT_GRANITE_CHAT_MODEL,
     DEFAULT_GRANITE_COMPLETION_MODEL,
     DEFAULT_GRANITE_EMBEDDING_MODEL,
   ],

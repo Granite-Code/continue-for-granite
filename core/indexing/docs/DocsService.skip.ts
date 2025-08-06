@@ -44,7 +44,6 @@
 //       ideSettings: {} as any,
 //       enableDebugLogs: false,
 //       remoteConfigServerUrl: "",
-//       localModelSize: undefined,
 //     });
 //     configHandler = new ConfigHandler(
 //       ide,

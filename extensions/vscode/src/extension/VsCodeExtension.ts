@@ -451,10 +451,6 @@ export class VsCodeExtension {
         const settings = await this.ide.getIdeSettings();
         void this.core.invoke("config/ideSettingsUpdate", settings);
       }
-      if (event.affectsConfiguration("continue.localModelSize")) {
-        const settings = await this.ide.getIdeSettings();
-        this.configHandler.updateIdeSettings(settings);
-      }
     });
   }
 

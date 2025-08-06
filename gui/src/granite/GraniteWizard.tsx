@@ -1,16 +1,9 @@
-import { LocalModelSize } from "core";
-import {
-  DEFAULT_GRANITE_MODEL_IDS_LARGE,
-  DEFAULT_GRANITE_MODEL_IDS_SMALL,
-} from "core/config/default";
+import { DEFAULT_GRANITE_MODEL_IDS } from "core/config/default";
 import { DEFAULT_MODEL_INFO } from "core/granite/commons/modelInfo";
 import { ProgressData } from "core/granite/commons/progressData";
 import { ServerState } from "core/granite/commons/serverState";
 import { ModelStatus, ServerStatus } from "core/granite/commons/statuses";
-import {
-  shouldRecommendLargeModel,
-  SystemInfo,
-} from "core/granite/commons/sysInfo";
+import { SystemInfo } from "core/granite/commons/sysInfo";
 import { formatSize } from "core/granite/commons/textUtils";
 import {
   checkMinimumServerVersion,
@@ -69,10 +62,6 @@ interface WizardContextProps {
   setInstallationModes: React.Dispatch<
     React.SetStateAction<InstallationMode[]>
   >;
-  preselectedModel: LocalModelSize;
-  setPreselectedModel: React.Dispatch<React.SetStateAction<LocalModelSize>>;
-  selectedModel: LocalModelSize;
-  setSelectedModel: React.Dispatch<React.SetStateAction<LocalModelSize>>;
   statusByModel: Map<string, ModelStatus>;
   setStatusByModel: React.Dispatch<
     React.SetStateAction<Map<string, ModelStatus>>
@@ -137,10 +126,6 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
   const [installationModes, setInstallationModes] = useState<
     InstallationMode[]
   >([]);
-  const [preselectedModel, setPreselectedModel] =
-    useState<LocalModelSize>("large");
-  const [selectedModel, setSelectedModel] =
-    useState<LocalModelSize>(preselectedModel);
   const [modelInstallationProgress, setModelInstallationProgress] =
     useState<number>(0);
   const [modelInstallationError, setModelInstallationError] = useState<
@@ -173,10 +158,6 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
         setSystemInfo,
         installationModes,
         setInstallationModes,
-        preselectedModel,
-        setPreselectedModel,
-        selectedModel,
-        setSelectedModel,
         statusByModel,
         setStatusByModel,
         modelInstallationProgress,
@@ -420,7 +401,6 @@ const OllamaInstallStep: React.FC<StepProps> = (props) => {
 const ModelSelectionStep: React.FC<StepProps> = (props) => {
   const {
     serverState,
-    selectedModel,
     modelInstallationProgress,
     setModelInstallationProgress,
     modelInstallationStatus,
@@ -439,9 +419,7 @@ const ModelSelectionStep: React.FC<StepProps> = (props) => {
     setModelInstallationStatus("downloading");
     vscode.postMessage({
       command: "installModels",
-      data: {
-        model: selectedModel,
-      },
+      data: {},
     });
   };
 
@@ -467,7 +445,7 @@ const ModelSelectionStep: React.FC<StepProps> = (props) => {
     const sysErrors = [];
     if (systemInfo && systemInfo.diskSpace) {
       const { freeDiskSpace } = systemInfo.diskSpace;
-      const requiredDiskSpace = getRequiredSpace(selectedModel, statusByModel);
+      const requiredDiskSpace = getRequiredSpace(statusByModel);
       if (freeDiskSpace < requiredDiskSpace) {
         sysErrors.push(
           `Insufficient disk space available: ${formatSize(freeDiskSpace)} free, ${formatSize(requiredDiskSpace)} required.`,
@@ -481,7 +459,7 @@ const ModelSelectionStep: React.FC<StepProps> = (props) => {
       );
     }
     setSystemErrors(sysErrors);
-  }, [systemInfo, selectedModel, statusByModel, serverState.version]);
+  }, [systemInfo, statusByModel, serverState.version]);
 
   const serverStatus = serverState.status;
 
@@ -492,8 +470,7 @@ const ModelSelectionStep: React.FC<StepProps> = (props) => {
           <p>
             Setup will download Granite AI models.
             <br />
-            Download size:{" "}
-            {formatSize(getRequiredSpace(selectedModel, statusByModel))}.
+            Download size: {formatSize(getRequiredSpace(statusByModel))}.
           </p>
 
           <div className="mt-4 flex items-center gap-2">
@@ -603,9 +580,6 @@ const WizardContent: React.FC = () => {
     setServerState,
     setSystemInfo,
     setInstallationModes,
-    setPreselectedModel,
-    preselectedModel,
-    setSelectedModel,
     setModelInstallationProgress,
     setModelInstallationError,
     modelInstallationStatus,
@@ -670,11 +644,6 @@ const WizardContent: React.FC = () => {
           setInstallationModes(data.installModes);
           const sysinfo = data.systemInfo as SystemInfo;
           setSystemInfo(sysinfo);
-          const preselectedModel = shouldRecommendLargeModel(sysinfo)
-            ? "large"
-            : "small";
-          setPreselectedModel(preselectedModel);
-          setSelectedModel("large");
           const wizardState = data.wizardState as WizardState | undefined;
           if (wizardState?.stepStatuses) {
             setStepStatuses(wizardState.stepStatuses);
@@ -879,12 +848,6 @@ const WizardContent: React.FC = () => {
               10&#x200A;GB of video memory is required.
             </p>
           </div>
-          {preselectedModel !== "large" && (
-            <p className="mb-4 text-[--vscode-editorWarning-foreground]">
-              Warning : this device's hardware does not meet the minimum
-              requirements.
-            </p>
-          )}
         </div>
         <div className="granite-wizard-steps">
           <div className="space-y-[1px]">
@@ -914,14 +877,8 @@ const WizardContent: React.FC = () => {
   );
 };
 
-function getRequiredSpace(
-  selectedModel: LocalModelSize,
-  statusByModel: Map<string, ModelStatus>,
-): number {
-  const models =
-    selectedModel === "large"
-      ? DEFAULT_GRANITE_MODEL_IDS_LARGE
-      : DEFAULT_GRANITE_MODEL_IDS_SMALL;
+function getRequiredSpace(statusByModel: Map<string, ModelStatus>): number {
+  const models = DEFAULT_GRANITE_MODEL_IDS;
   let missingModels = models.filter(
     (model) => statusByModel.get(model) !== ModelStatus.installed,
   );

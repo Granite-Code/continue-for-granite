@@ -1,8 +1,4 @@
-import { LocalModelSize } from "core";
-import {
-  DEFAULT_GRANITE_MODEL_IDS_LARGE,
-  DEFAULT_GRANITE_MODEL_IDS_SMALL,
-} from "core/config/default";
+import { DEFAULT_GRANITE_MODEL_IDS } from "core/config/default";
 import { EXTENSION_NAME } from "core/control-plane/env";
 import { ProgressData } from "core/granite/commons/progressData";
 import { ModelStatus } from "core/granite/commons/statuses";
@@ -64,14 +60,7 @@ export class ModelUpdater implements Disposable {
 
   private async checkModelUpdates(): Promise<void> {
     try {
-      const type = workspace
-        .getConfiguration(EXTENSION_NAME)
-        .get<LocalModelSize>("localModelSize", "large");
-      console.log(`Checking for [${type}] model updates...`);
-      const modelsToCheck =
-        type === "large"
-          ? DEFAULT_GRANITE_MODEL_IDS_LARGE
-          : DEFAULT_GRANITE_MODEL_IDS_SMALL;
+      const modelsToCheck = DEFAULT_GRANITE_MODEL_IDS;
 
       const modelsToUpdate = await Promise.all(
         modelsToCheck.map(async (model) => {

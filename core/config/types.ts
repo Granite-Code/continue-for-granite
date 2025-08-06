@@ -656,7 +656,6 @@ declare global {
     remoteConfigSyncPeriod: number;
     userToken: string;
     pauseCodebaseIndexOnStart: boolean;
-    localModelSize: LocalModelSize;
   }
   
   export interface IDE {

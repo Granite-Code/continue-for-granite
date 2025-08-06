@@ -27,7 +27,6 @@ import type {
   IdeInfo,
   IdeSettings,
   IndexTag,
-  LocalModelSize,
   Location,
   Problem,
   RangeInFile,
@@ -694,7 +693,6 @@ class VsCodeIde implements IDE {
         "pauseCodebaseIndexOnStart",
         false,
       ),
-      localModelSize: settings.get<LocalModelSize>("localModelSize", undefined),
     };
     return ideSettings;
   }

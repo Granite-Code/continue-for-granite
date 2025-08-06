@@ -1,10 +1,5 @@
-import { LocalModelSize } from "core";
 import { ConfigHandler } from "core/config/ConfigHandler";
-import {
-  DEFAULT_GRANITE_MODEL_IDS_LARGE,
-  DEFAULT_GRANITE_MODEL_IDS_SMALL,
-} from "core/config/default";
-import { EXTENSION_NAME } from "core/control-plane/env";
+import { DEFAULT_GRANITE_MODEL_IDS } from "core/config/default";
 import { GRANITE_ONBOARDING_INCOMPLETE_KEY } from "core/granite/commons/constants";
 import { ProgressData } from "core/granite/commons/progressData";
 import { ModelStatus, ServerStatus } from "core/granite/commons/statuses";
@@ -25,7 +20,6 @@ import {
   Webview,
   WebviewPanel,
   window,
-  workspace,
 } from "vscode";
 
 import { VsCodeWebviewProtocol } from "../../webviewProtocol";
@@ -338,11 +332,8 @@ export class SetupGranitePage {
 
             await this.publishStatus(webview);
             break;
-          case "selectModels":
-            this.wizardState.selectedModelSize = data.model as LocalModelSize;
-            break;
           case "installModels":
-            await this.installModels(data.model as LocalModelSize, panel);
+            await this.installModels(panel);
             break;
         }
       },
@@ -377,7 +368,7 @@ export class SetupGranitePage {
     );
   }
 
-  private async installModels(modelSize: LocalModelSize, panel: WebviewPanel) {
+  private async installModels(panel: WebviewPanel) {
     // Check if the server is running, if not, start it and wait for it to be ready until timeout is reached
     var { serverState, timeout } = await this.waitUntilOllamaStarts();
     const webview = panel.webview;
@@ -406,11 +397,7 @@ export class SetupGranitePage {
     this.modelInstallCanceller = new CancellationController();
     this._disposables.push(this.modelInstallCanceller);
     try {
-      this.wizardState.selectedModelSize = modelSize;
-      const modelsToPull =
-        modelSize === "large"
-          ? DEFAULT_GRANITE_MODEL_IDS_LARGE
-          : DEFAULT_GRANITE_MODEL_IDS_SMALL;
+      const modelsToPull = DEFAULT_GRANITE_MODEL_IDS;
 
       const result = await this.server.pullModels(
         modelsToPull,
@@ -419,7 +406,6 @@ export class SetupGranitePage {
       );
       await this.publishStatus(webview);
       if (result) {
-        await this.saveSettings(modelSize);
         if (!panel.visible) {
           const selection = await window.showInformationMessage(
             "Granite.Code is ready to be used.",
@@ -485,7 +471,7 @@ export class SetupGranitePage {
 
   async publishStatus(webview: Webview) {
     // console.log("Received fetchStatus msg " + debounceStatus);
-    const modelIds = DEFAULT_GRANITE_MODEL_IDS_LARGE;
+    const modelIds = DEFAULT_GRANITE_MODEL_IDS;
     const [serverState, statusByModel] = await Promise.all([
       this.server.getState(),
       this.getStatusByModel(modelIds),
@@ -525,11 +511,5 @@ export class SetupGranitePage {
 
   private async openUrl(url: string) {
     await commands.executeCommand("vscode.open", Uri.parse(url));
-  }
-
-  async saveSettings(modelSize: LocalModelSize): Promise<void> {
-    console.log("Saving settings for model size: " + modelSize);
-    const config = workspace.getConfiguration(EXTENSION_NAME);
-    await config.update("localModelSize", modelSize, true);
   }
 }
