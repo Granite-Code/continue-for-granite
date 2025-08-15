@@ -292,58 +292,7 @@ export class ContinueCompletionProvider
         );
       }
       this._lastShownCompletion = outcome;
-
-      // Construct the range/text to show
-      const startPos = selectedCompletionInfo?.range.start ?? position;
-      // const startPos = new vscode.Position(0, 0);
-      // const endPos = new vscode.Position(0, 5);
-      let range = new vscode.Range(startPos, startPos);
-      // let range = new vscode.Range(startPos, endPos);
       let completionText = outcome.completion;
-
-      // NOTE: This seems like an autocomplete logic.
-      const isSingleLineCompletion = outcome.completion.split("\n").length <= 1;
-
-      if (isSingleLineCompletion) {
-        const lastLineOfCompletionText = completionText.split("\n").pop() || "";
-        const currentText = document
-          .lineAt(startPos)
-          .text.substring(startPos.character);
-
-        const result = processSingleLineCompletion(
-          lastLineOfCompletionText,
-          currentText,
-          startPos.character,
-          true,
-        );
-
-        if (result === undefined) {
-          return undefined;
-        }
-
-        completionText = result.completionText;
-        if (result.range) {
-          range = new vscode.Range(
-            new vscode.Position(startPos.line, result.range.start),
-            new vscode.Position(startPos.line, result.range.end),
-          );
-        }
-      } else {
-        // Extend the range to the end of the line for multiline completions
-        range = new vscode.Range(startPos, document.lineAt(startPos).range.end);
-      }
-
-      const autocompleteCompletionItem = new vscode.InlineCompletionItem(
-        completionText,
-        range,
-        {
-          title: "Log Autocomplete Outcome",
-          command: "continue.logAutocompleteOutcome",
-          arguments: [input.completionId, this.completionProvider],
-        },
-      );
-
-      (autocompleteCompletionItem as any).completeBracketPairs = true;
 
       if (this.isNextEditActive) {
         const editor = vscode.window.activeTextEditor;
@@ -428,6 +377,61 @@ export class ContinueCompletionProvider
 
         return undefined;
       } else {
+        // Construct the range/text to show
+        const startPos = selectedCompletionInfo?.range.start ?? position;
+        // const startPos = new vscode.Position(0, 0);
+        // const endPos = new vscode.Position(0, 5);
+        let range = new vscode.Range(startPos, startPos);
+        // let range = new vscode.Range(startPos, endPos);
+
+        // NOTE: This seems like an autocomplete logic.
+        const isSingleLineCompletion =
+          outcome.completion.split("\n").length <= 1;
+
+        if (isSingleLineCompletion) {
+          const lastLineOfCompletionText =
+            completionText.split("\n").pop() || "";
+          const currentText = document
+            .lineAt(startPos)
+            .text.substring(startPos.character);
+
+          const result = processSingleLineCompletion(
+            lastLineOfCompletionText,
+            currentText,
+            startPos.character,
+            true,
+          );
+
+          if (result === undefined) {
+            return undefined;
+          }
+
+          completionText = result.completionText;
+          if (result.range) {
+            range = new vscode.Range(
+              new vscode.Position(startPos.line, result.range.start),
+              new vscode.Position(startPos.line, result.range.end),
+            );
+          }
+        } else {
+          // Extend the range to the end of the line for multiline completions
+          range = new vscode.Range(
+            startPos,
+            document.lineAt(startPos).range.end,
+          );
+        }
+
+        const autocompleteCompletionItem = new vscode.InlineCompletionItem(
+          completionText,
+          range,
+          {
+            title: "Log Autocomplete Outcome",
+            command: "continue.logAutocompleteOutcome",
+            arguments: [input.completionId, this.completionProvider],
+          },
+        );
+
+        (autocompleteCompletionItem as any).completeBracketPairs = true;
         return [autocompleteCompletionItem];
       }
     } finally {
