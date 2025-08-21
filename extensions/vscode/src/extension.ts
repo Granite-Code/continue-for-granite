@@ -10,6 +10,8 @@ import * as vscode from "vscode";
 import { getExtensionVersion } from "./util/util";
 export { default as buildTimestamp } from "./.buildTimestamp";
 
+let ctx: vscode.ExtensionContext | undefined;
+
 async function dynamicImportAndActivate(context: vscode.ExtensionContext) {
   await setupCa();
   const { activateExtension } = await import("./activation/activate");
@@ -17,6 +19,7 @@ async function dynamicImportAndActivate(context: vscode.ExtensionContext) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  ctx = context;
   return dynamicImportAndActivate(context).catch((e) => {
     console.log("Error activating extension: ", e);
     Telemetry.capture(
@@ -45,7 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
   });
 }
 
-export function deactivate() {
+export async function deactivate() {
+  const start = Date.now();
   Telemetry.capture(
     "deactivate",
     {
@@ -53,6 +57,11 @@ export function deactivate() {
     },
     true,
   );
-
   Telemetry.shutdownPosthogClient();
+  if (ctx) {
+    const { deactivate } = await import("./activation/activate");
+    await deactivate(ctx);
+  }
+  const elapsed = Date.now() - start;
+  console.log(`Deactivating done in ${elapsed} ms`);
 }

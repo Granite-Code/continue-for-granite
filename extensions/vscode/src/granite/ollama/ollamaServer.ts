@@ -461,6 +461,27 @@ export class OllamaServer implements IModelServer, Disposable {
     return modelInfo || DEFAULT_MODEL_INFO.get(modelName);
   }
 
+  /**
+   * Unload model from ollama server, see https://github.com/ollama/ollama/blob/main/docs/api.md#unload-a-model
+   * @param model - The model to unload
+   */
+  async unloadModel(model: string): Promise<void> {
+    const response = await fetch(`${this.serverUrl}/api/generate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ model, keep_alive: 0 }),
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to unload model ${model}: ${response.status} ${response.statusText} - ${errorText}`,
+      );
+    }
+    console.log(`Unloaded ${model}`);
+  }
+
   private async fetchModelInfo(
     modelName: string,
     signal?: AbortSignal,
