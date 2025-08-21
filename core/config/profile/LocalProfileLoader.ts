@@ -15,6 +15,7 @@ export default class LocalProfileLoader implements IProfileLoader {
 
   constructor(
     private ide: IDE,
+    private ideSettingsPromise: Promise<IdeSettings>,
     private controlPlaneClient: ControlPlaneClient,
     private llmLogger: ILLMLogger,
     private overrideAssistantFile?:
@@ -53,12 +54,10 @@ export default class LocalProfileLoader implements IProfileLoader {
   }
   description: ProfileDescription;
 
-  async doLoadConfig(
-    ideSettingsPromise: Promise<IdeSettings>,
-  ): Promise<ConfigResult<ContinueConfig>> {
+  async doLoadConfig(): Promise<ConfigResult<ContinueConfig>> {
     const result = await doLoadConfig({
       ide: this.ide,
-      ideSettingsPromise: ideSettingsPromise,
+      ideSettingsPromise: this.ideSettingsPromise,
       controlPlaneClient: this.controlPlaneClient,
       llmLogger: this.llmLogger,
       profileId: this.description.id,

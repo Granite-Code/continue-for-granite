@@ -75,7 +75,12 @@ export class ConfigHandler {
 
     // This profile manager will always be available
     this.globalLocalProfileManager = new ProfileLifecycleManager(
-      new LocalProfileLoader(ide, this.controlPlaneClient, this.llmLogger),
+      new LocalProfileLoader(
+        ide,
+        ideSettingsPromise,
+        this.controlPlaneClient,
+        this.llmLogger,
+      ),
       this.ide,
     );
 
@@ -325,6 +330,7 @@ export class ConfigHandler {
       const profiles = assistantFiles.map((assistant) => {
         return new LocalProfileLoader(
           this.ide,
+          this.ideSettingsPromise,
           this.controlPlaneClient,
           this.llmLogger,
           assistant,
@@ -450,10 +456,7 @@ export class ConfigHandler {
     }
 
     const { config, errors, configLoadInterrupted } =
-      await this.currentProfile.reloadConfig(
-        this.additionalContextProviders,
-        this.ideSettingsPromise,
-      );
+      await this.currentProfile.reloadConfig(this.additionalContextProviders);
 
     this.notifyConfigListeners({ config, errors, configLoadInterrupted });
 
@@ -501,7 +504,6 @@ export class ConfigHandler {
       };
     }
     return await this.currentProfile.getSerializedConfig(
-      this.ideSettingsPromise,
       this.additionalContextProviders,
     );
   }
@@ -517,7 +519,6 @@ export class ConfigHandler {
     await this.isInitialized;
     const config = await this.currentProfile.loadConfig(
       this.additionalContextProviders,
-      this.ideSettingsPromise,
     );
 
     if (config.errors?.length) {
