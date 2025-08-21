@@ -1,16 +1,10 @@
 import * as path from "path";
 
-import { LocalModelSize } from "core";
-import {
-  DEFAULT_GRANITE_MODEL_IDS_LARGE,
-  DEFAULT_GRANITE_MODEL_IDS_SMALL,
-} from "core/config/default";
-import { EXTENSION_NAME } from "core/control-plane/env";
+import { DEFAULT_GRANITE_MODEL_IDS } from "core/config/default";
 import { GRANITE_INITIAL_ACTIVATION_COMPLETED_KEY } from "core/granite/commons/constants";
 import { getContinueRcPath, getTsConfigPath } from "core/util/paths";
 import { Telemetry } from "core/util/posthog";
 import * as vscode from "vscode";
-import { workspace } from "vscode";
 
 import { VsCodeExtension } from "../extension/VsCodeExtension";
 import { registerModelUpdater } from "../granite/ollama/modelUpdater";
@@ -109,13 +103,7 @@ export async function activateExtension(context: vscode.ExtensionContext) {
 
 export async function deactivate(context: vscode.ExtensionContext) {
   // Unload Granite LLMs from Ollama
-  const type = workspace
-    .getConfiguration(EXTENSION_NAME)
-    .get<LocalModelSize>("localModelSize");
-  const modelsToUnload =
-    type === "large"
-      ? DEFAULT_GRANITE_MODEL_IDS_LARGE
-      : DEFAULT_GRANITE_MODEL_IDS_SMALL;
+  const modelsToUnload = DEFAULT_GRANITE_MODEL_IDS;
 
   const ollamaServer = new OllamaServer(context);
   let unloadedModels = 0;
