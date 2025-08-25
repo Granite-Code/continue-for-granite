@@ -9,7 +9,6 @@ import {
   ContinueConfig,
   IContextProvider,
   IDE,
-  IdeSettings,
 } from "../index.js";
 
 import { finalToBrowserConfig } from "./load.js";
@@ -66,22 +65,16 @@ export class ProfileLifecycleManager {
   // Clear saved config and reload
   async reloadConfig(
     additionalContextProviders: IContextProvider[] = [],
-    ideSettingsPromise: Promise<IdeSettings>,
   ): Promise<ConfigResult<ContinueConfig>> {
     this.savedConfigResult = undefined;
     this.savedBrowserConfigResult = undefined;
     this.pendingConfigPromise = undefined;
 
-    return this.loadConfig(
-      additionalContextProviders,
-      ideSettingsPromise,
-      true,
-    );
+    return this.loadConfig(additionalContextProviders, true);
   }
 
   async loadConfig(
     additionalContextProviders: IContextProvider[],
-    ideSettingsPromise: Promise<IdeSettings>,
     forceReload: boolean = false,
   ): Promise<ConfigResult<ContinueConfig>> {
     // If we already have a config, return it
@@ -101,7 +94,7 @@ export class ProfileLifecycleManager {
         // Like invalid json, invalid yaml, file read errors, etc.
         // NOT block-specific loading errors
         try {
-          result = await this.profileLoader.doLoadConfig(ideSettingsPromise);
+          result = await this.profileLoader.doLoadConfig();
         } catch (e) {
           const message =
             e instanceof Error
@@ -137,16 +130,12 @@ export class ProfileLifecycleManager {
   }
 
   async getSerializedConfig(
-    ideSettingsPromise: Promise<IdeSettings>,
     additionalContextProviders: IContextProvider[],
   ): Promise<ConfigResult<BrowserSerializedContinueConfig>> {
     if (this.savedBrowserConfigResult) {
       return this.savedBrowserConfigResult;
     } else {
-      const result = await this.loadConfig(
-        additionalContextProviders,
-        ideSettingsPromise,
-      );
+      const result = await this.loadConfig(additionalContextProviders);
       if (!result.config) {
         return {
           ...result,
