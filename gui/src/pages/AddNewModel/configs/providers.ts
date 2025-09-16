@@ -118,7 +118,7 @@ export const providers: Partial<Record<string, ProviderInfo>> = {
     title: "Moonshot",
     provider: "moonshot",
     description: "Use the Moonshot API for LLMs",
-    longDescription: `[Visit our documentation](https://docs.continue.dev/reference/Model%20Providers/moonshot) for information on obtaining an API key.`,
+    longDescription: `Visit the Moonshot documentation for information on obtaining an API key.`,
     icon: "moonshot.png",
     tags: [ModelProviderTags.RequiresApiKey],
     refPage: "moonshot",
@@ -229,7 +229,7 @@ export const providers: Partial<Record<string, ProviderInfo>> = {
     provider: "azure",
     description:
       "Azure OpenAI Service offers industry-leading coding and language AI models that you can fine-tune to your specific needs for a variety of use cases.",
-    longDescription: `[Visit our documentation](https://docs.continue.dev/reference/Model%20Providers/azure) for information on obtaining an API key.
+    longDescription: `Visit the Azure OpenAI documentation for information on obtaining an API key.
 
 Select the \`GPT-4o\` model below to complete your provider configuration, but note that this will not affect the specific model you need to select when creating your Azure deployment.`,
     icon: "azure.png",

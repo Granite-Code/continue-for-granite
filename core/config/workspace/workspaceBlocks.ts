@@ -53,7 +53,7 @@ function getContentsForNewBlock(blockType: BlockType): ConfigYaml {
       configYaml.docs = [
         {
           name: "New docs",
-          startUrl: "https://docs.continue.dev",
+          startUrl: "https://docs.granitecode.ai",
         },
       ];
       break;
